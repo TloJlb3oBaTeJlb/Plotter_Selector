@@ -1,0 +1,268 @@
+﻿<Window x:Class="Project_UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project_UI"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Height="450"
+        Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        StateChanged="Window_StateChanged">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter
+            x:Key="boolToVisibilityConverter"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto"/>
+            <RowDefinition
+                Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition
+                Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border
+            Name="TopPanel"
+            Grid.Row="0"
+            MouseDown="Window_MouseDown"
+            Style="{StaticResource TopPannel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition
+                        Width="Auto"/>
+                    <ColumnDefinition
+                        Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Text="PlotterPRO"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="LightGray"
+                    Margin="5,0"/>
+
+                <StackPanel
+                    Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+                    <Button
+                        x:Name="MinimizeButton"
+                        Click="MinimizeButton_Click"
+                        ToolTip="Свернуть"
+                        Style="{StaticResource WindowControlButton}">
+                        <Button.Content>
+                            <Path
+                                Data="{StaticResource MinimizeButton}"
+                                Width="10"
+                                Height="1"
+                                Fill="White"
+                                Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        x:Name="MaximizeRestoreButton"
+                        Click="MaximizeRestoreButton_Click"
+                        ToolTip="Развернуть"
+                        Style="{StaticResource WindowControlButton}">
+                        <Button.Content>
+                            <Path
+                                x:Name="MaximizeRestoreButtonIcon"
+                                Data="{StaticResource MaximizeButton}"
+                                Width="10"
+                                Height="8"
+                                Fill="White"
+                                Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        x:Name="CloseButton" 
+                       Click="CloseButton_Click"
+                        ToolTip="Закрыть"
+                        Style="{StaticResource CloseButton}">
+                        <Button.Content>
+                            <Path
+                                Data="{StaticResource Exitbutton}"
+                                Width="10"
+                                Height="10"
+                                Fill="White"
+                                Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="SearchBar"
+            Grid.Row="1"
+            Background="BlanchedAlmond"
+            Style="{StaticResource SearchBar}">
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                <TextBox
+                    x:Name="SearchBox"
+                    Height="25"
+                    Width="200"
+                    Margin="0,0,5,0"/>
+                <Button
+                    x:Name="SearchButton"
+                    Click="SearchButton_Click"
+                    ToolTip="Поиск"
+                    Margin="0,0,20,0"
+                    Style="{StaticResource SearchButton}">
+                    <Button.Content>
+                        <Path
+                            Data="{StaticResource MagnifyingGlass}"
+                            Width="20"
+                            Height="20"
+                            Fill="Black"
+                            Stretch="Uniform"/>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Border
+            x:Name="MainContent"
+            Grid.Row="2"
+            Style="{StaticResource MainContent}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="230"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    x:Name="FilterMenu"
+                    Grid.Column="0"
+                    Style="{StaticResource FilterMenu}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition
+                                Height="30"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Text="Фильтры для поиска:"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="Black"
+                            Background="LightGray"
+                            Padding="6,3"/>
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Orientation="Vertical"
+                            Width="230"
+                            Margin="3,0,0,0"
+                            HorizontalAlignment="Left">
+
+                            <StackPanel
+                                x:Name="ComplexFilterType"
+                                Orientation="Vertical"
+                                HorizontalAlignment="Left"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid
+                                    Width="225">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox
+                                        x:Name="FilterTypeMajorCheckBox"
+                                        Grid.Column="0"
+                                        Content="Все"
+                                        FontSize="15"
+                                        FontWeight="Medium"
+                                        IsThreeState="True"
+                                        Click="FilterTypeMajorCheckBox_Click"/>
+
+                                    <Button
+                                        x:Name="FilterTypeButton"
+                                        Grid.Column="1"
+                                        Click="FilterTypeButton_Click"
+                                        ToolTip="Показать типы"
+                                        Style="{StaticResource ParentFilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterTypeButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <StackPanel
+                                    x:Name="FilterTypeChildCheckBoxes"
+                                    Margin="10,0,0,0"
+                                    Orientation="Vertical">
+
+                                    <CheckBox
+                                        x:Name="FilterTypeChild1"
+                                        Content="Тип 1"
+                                        Checked="ChildCheckBox_Checked"
+                                        Unchecked="ChildCheckBox_Unchecked"
+                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterTypeChild2"
+                                        Content="Тип 2"
+                                        Checked="ChildCheckBox_Checked"
+                                        Unchecked="ChildCheckBox_Unchecked"
+                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterTypeChild3"
+                                        Content="Тип 3"
+                                        Checked="ChildCheckBox_Checked"
+                                        Unchecked="ChildCheckBox_Unchecked"
+                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+                                </StackPanel>
+                                
+                            </StackPanel>
+                            
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border
+                    x:Name="ContentField"
+                    Grid.Column="1"
+                    Style="{StaticResource ContentField}">
+                    
+                </Border>
+                
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="BottomPanel"
+            Grid.Row="3"
+            ToolTip="LowBarToolTip"
+            Style="{StaticResource BottomPanel}">
+            <TextBlock
+                Text="© 2025 Группа 434. Все права защищены."
+                FontSize="8"
+                HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>

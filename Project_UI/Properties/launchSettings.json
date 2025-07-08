@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Project_UI": {
+      "commandName": "Project",
+      "hotReloadEnabled": true
+    }
+  }
+}
