@@ -1,0 +1,9 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/PlotterDbLib/bin/Debug/net8.0
+/PlotterDbLib/obj
+/TestServer/bin/Debug/net8.0
+/TestServer/obj
