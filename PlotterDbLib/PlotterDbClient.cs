@@ -30,18 +30,23 @@ namespace PlotterDbLib
         /// <returns>Коллекция плоттеров, удовлетворяющий фильтрам</returns>
         public async Task<List<Plotter>> GetFilteredPlottersAsync(Filter filter)
         {
-            List<Plotter> result = [];
+            
+            ByteArrayContent byteContent = new(
+                JsonSerializer.SerializeToUtf8Bytes(filter, options));
 
-            // query
-            /*var ur = new FormUrlEncodedContent(filter.ToDictionary());
-            var tmp = "path?" + await ur.ReadAsStringAsync();//*/
+            HttpRequestMessage message = new(HttpMethod.Get, "") {
+                Content = byteContent
+            };
 
-            // change because this is horrible
-            string tmp = JsonSerializer.Serialize(filter, options);
-            var res = await client.GetFromJsonAsync<List<Plotter>>(tmp, options);
+            var response = await client.SendAsync(message);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                throw new HttpRequestException(
+                    "Request failed, status code: " + response.StatusCode);
 
-            if (res != null) result = (List<Plotter>)res;
-            return result;
+            var res = await response.Content.ReadFromJsonAsync<List<Plotter>>(options);
+
+            if (res != null) return res;
+            return [];
         }
 
 

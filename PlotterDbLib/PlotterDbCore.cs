@@ -190,35 +190,11 @@ Width: {Width},
 
         internal bool IsSuitable(Plotter plotter)
         {
-            return IsInPriceRange(plotter) &&
+            return plotter.Model.Contains(Model) &&
+                IsInPriceRange(plotter) &&
                 IsInWidthRange(plotter) &&
                 AreEnumsMatch(plotter);
         }
-
-        // query
-        /*internal Dictionary<string, string> ToDictionary()
-        {
-            return new()
-            {
-                { "Model", Model },
-                { "PriceRange", PriceRange.ToString() },
-                { "width", WidthRange.ToString() },
-                { typeof(PlotterType).Name, PlotterType.ToString() },
-                { typeof(Positioning).Name, Positioning.ToString() },
-                { typeof(Color).Name, Color.ToString() },
-                { typeof(DrawingMethod).Name, DrawingMethod.ToString() },
-            };
-        }
-
-
-        internal static Filter FromDictionary(Dictionary<string, string> dict)
-        {
-            return new()
-            {
-                Model = dict["Model"],
-                //PriceRange = WidthRange
-            };
-        }//*/
 
 
         private bool IsInPriceRange(Plotter plotter) =>

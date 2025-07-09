@@ -16,11 +16,12 @@ namespace PlotterDbLib
 {
     public class PlotterDbServer
     {
-        public PlotterDbServer()
+        public PlotterDbServer(bool forceRecreation = false)
         {
             using var dbContext = new PlotterDbContext(DbPath);
 
-            //dbContext.Database.EnsureDeleted();
+            if (forceRecreation) dbContext.Database.EnsureDeleted();
+
             if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
             else
             {
@@ -51,6 +52,11 @@ namespace PlotterDbLib
             listener.Prefixes.Add(Url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
+
+            //test - successful
+            //var a = new Plotter { PlotterId = 1 };
+            //dbContext.Remove(a);
+            //dbContext.SaveChanges();
         }
 
 
@@ -92,18 +98,34 @@ namespace PlotterDbLib
 
         private async void HandleRequestAsync(HttpListenerContext context)
         {
-            switch (context.Request.HttpMethod)
+            
+            try
             {
-                case "GET":
-                    await HandleGetAsync(context);
-                    break;
-                case "POST":
-                    await HandlePostAsync(context);
-                    break;
-                default:
-                    await SendResponseAsync(context.Response, "MethodNotAllowed", 405);
-                    break;
+                switch (context.Request.HttpMethod)
+                {
+                    case "GET":
+                        await HandleGetAsync(context);
+                        break;
+                    case "POST":
+                        await HandlePostAsync(context);
+                        break;
+                    case "PUT":
+                        await HandlePutAsync(context);
+                        break;
+                    case "DELETE":
+                        await HandleDeleteAsync(context);
+                        break;
+                    default:
+                        context.Response.StatusCode = 405;
+                        break;
+                }
             }
+            catch (JsonException exception)
+            {
+                Console.WriteLine(exception.Message); // unify logging
+                context.Response.StatusCode = 400;
+            }
+            context.Response.Close();
 
             Console.WriteLine("Request handled");
         }
@@ -111,74 +133,61 @@ namespace PlotterDbLib
 
         private async Task HandleGetAsync(HttpListenerContext context)
         {
-            var response = context.Response;
-            try
-            {
-                // stream
-                /*var req = context.Request;
-                byte[] buffer = new byte[req.ContentLength64];
-                context.Request.InputStream.Read(buffer, 0, 
-                (int)req.ContentLength64);
-                buffer.ToString();//*/
-
-                Filter filter = GetFilter(context.Request.Url);
-                // forming filtered result
-                string serialisedList =
-                    JsonSerializer.Serialize(GetFiltered(filter), options);
-                await SendResponseAsync(response, serialisedList);
-            }
-            catch (ArgumentNullException exception)
-            {
-                Console.WriteLine(exception.Message);
-                await SendResponseAsync(response, "BadRequest", 400);
-            }
-            catch (JsonException exception)
-            {
-                Console.WriteLine(exception.Message);
-                await SendResponseAsync(response, "BadRequest", 400);
-            }
+            var filter = GetObjectFromContent<Filter>(context.Request);
+            await AddJsonContentAsync(context.Response, GetFiltered(filter));
         }
 
 
         private async Task HandlePostAsync(HttpListenerContext context)
         {
-            await SendResponseAsync(context.Response, "NotImplemented", 405);
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Add(plotter);
+            await db.SaveChangesAsync();
         }
 
 
-        private async Task SendResponseAsync(HttpListenerResponse response, 
-            string content, int statusCode = 200)
+        private async Task HandlePutAsync(HttpListenerContext context)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(content);
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Update(plotter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private async Task HandleDeleteAsync(HttpListenerContext context)
+        {
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Remove(plotter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private T GetObjectFromContent<T>(HttpListenerRequest request) where T : class
+        {
+            byte[] buffer = new byte[request.ContentLength64];
+            request.InputStream.Read(buffer, 0, (int)request.ContentLength64);
+            return JsonSerializer.Deserialize<T>(buffer, options) ?? 
+                throw new JsonException("Deserialized null value");
+        }
+
+
+        private async Task AddJsonContentAsync(HttpListenerResponse response, 
+            object content)
+        {
+            byte[] buffer = JsonSerializer.SerializeToUtf8Bytes(content, options);
 
             response.ContentLength64 = buffer.Length;
             response.ContentType = "Application/json";
-            response.StatusCode = statusCode;
 
             using Stream output = response.OutputStream;
             await output.WriteAsync(buffer);
             await output.FlushAsync();
-        }
-
-
-        private Filter GetFilter(Uri? url)
-        {
-            ArgumentNullException.ThrowIfNull(url, nameof(url));
-
-            // query
-            /*Console.WriteLine(url.Query);
-            var query = HttpUtility.ParseQueryString(url.Query);
-            Dictionary<string, string> dict = new();
-            foreach (string key in query.Keys) dict[key] = query[key];//*/
-
-            string serialisedFilter = new(url.LocalPath.Skip(1).ToArray());
-            if (serialisedFilter == string.Empty) return new Filter();
-
-            var obj = JsonSerializer.Deserialize<Filter>(serialisedFilter, options);
-            
-            if (obj == null) return new Filter();
-            return (Filter)obj;
-
         }
 
 

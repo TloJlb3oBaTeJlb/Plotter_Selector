@@ -10,11 +10,11 @@ namespace TestServer
             var task = server.StartAsync();
 
             while (!server.IsRunning) { }
-            PlotterDbClient client = new();
-            (await client.GetFilteredPlottersAsync(new())).ForEach(Console.WriteLine);
+            PlotterDbAdminClient client = new();
+            // TODO: Unify requests on client
+            //Console.WriteLine(await client.AddPlotterAsync());
+            (await client.GetFilteredPlottersAsync(new() { Model = ""})).ForEach(Console.WriteLine);
             server.Stop();
-
-            //await task;
         }
     }
 }
