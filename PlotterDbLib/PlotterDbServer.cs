@@ -18,7 +18,7 @@ namespace PlotterDbLib
     {
         public PlotterDbServer()
         {
-            var dbContext = new PlotterDbContext(DbPath);
+            using var dbContext = new PlotterDbContext(DbPath);
 
             //dbContext.Database.EnsureDeleted();
             if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
@@ -57,60 +57,96 @@ namespace PlotterDbLib
         //public bool ContinueToRun { set; get; } = true;
         public string DbPath { init; get; } = "plotters.db";
         public string Url { init; get; } = "http://localhost:1111/";
-        public bool IsRunning { get; private set; } = false;
+        public bool IsRunning { get => listener.IsListening; }
 
 
-        public async Task RunAsync()
+        public async Task StartAsync()
         {
             listener.Start();
             Console.WriteLine("Server started with url - " + Url);
-            IsRunning = true;
 
             while (true)
             {
-                var context = await listener.GetContextAsync();
-                Console.WriteLine("Request recieved");
-
-                var response = context.Response;
                 try
                 {
-                    // stream
-                    /*var req = context.Request;
-                    byte[] buffer = new byte[req.ContentLength64];
-                    context.Request.InputStream.Read(buffer, 0, 
-                    (int)req.ContentLength64);
-                    buffer.ToString();//*/
+                    while (true)
+                    {
+                        var context = await listener.GetContextAsync();
+                        Console.WriteLine("Request received");
 
-                    Filter filter = GetFilter(context.Request.Url);
-                    // forming filtered result
-                    string serialisedList = 
-                        JsonSerializer.Serialize(GetFiltered(filter), options);
-                    await SendResponse(response, serialisedList);
+                        HandleRequestAsync(context);
+                    }
                 }
-                catch (ArgumentNullException exception)
+                catch (HttpListenerException)
                 {
-                    Console.WriteLine(exception.Message);
-                    await SendResponse(response, "BadRequst", 400);
+                    listener.Close();
+                    Console.WriteLine("Server stopped");
                 }
-                catch (JsonException exception)
-                {
-                    Console.WriteLine(exception.Message);
-                    await SendResponse(response, "BadRequst", 400);
-                }
-
-                Console.WriteLine("Request handled");
             }
-
-            // TODO make server stoppable
-            /*listener.Stop();
-            listener.Close();
-
-            Console.WriteLine("Server stopped");*/
 
         }
 
 
-        private async Task SendResponse(HttpListenerResponse response, 
+        public void Stop() => listener.Stop();
+
+
+        private async void HandleRequestAsync(HttpListenerContext context)
+        {
+            switch (context.Request.HttpMethod)
+            {
+                case "GET":
+                    await HandleGetAsync(context);
+                    break;
+                case "POST":
+                    await HandlePostAsync(context);
+                    break;
+                default:
+                    await SendResponseAsync(context.Response, "MethodNotAllowed", 405);
+                    break;
+            }
+
+            Console.WriteLine("Request handled");
+        }
+
+
+        private async Task HandleGetAsync(HttpListenerContext context)
+        {
+            var response = context.Response;
+            try
+            {
+                // stream
+                /*var req = context.Request;
+                byte[] buffer = new byte[req.ContentLength64];
+                context.Request.InputStream.Read(buffer, 0, 
+                (int)req.ContentLength64);
+                buffer.ToString();//*/
+
+                Filter filter = GetFilter(context.Request.Url);
+                // forming filtered result
+                string serialisedList =
+                    JsonSerializer.Serialize(GetFiltered(filter), options);
+                await SendResponseAsync(response, serialisedList);
+            }
+            catch (ArgumentNullException exception)
+            {
+                Console.WriteLine(exception.Message);
+                await SendResponseAsync(response, "BadRequest", 400);
+            }
+            catch (JsonException exception)
+            {
+                Console.WriteLine(exception.Message);
+                await SendResponseAsync(response, "BadRequest", 400);
+            }
+        }
+
+
+        private async Task HandlePostAsync(HttpListenerContext context)
+        {
+            await SendResponseAsync(context.Response, "NotImplemented", 405);
+        }
+
+
+        private async Task SendResponseAsync(HttpListenerResponse response, 
             string content, int statusCode = 200)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(content);
@@ -158,31 +194,6 @@ namespace PlotterDbLib
         }
 
 
-        private class PlotterDbContext : DbContext
-        {
-            public PlotterDbContext(string db_path) : base() => dbPath = db_path;
-
-
-            public DbSet<Plotter> Plotters { get; set; }
-
-
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseSqlite($"Data Source={dbPath}");
-            }
-
-
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
-            }
-
-
-            private readonly string dbPath;
-        }
-
-
         private static void SetUpDataBase(PlotterDbContext dbContext)
         {
             // Test data
@@ -208,6 +219,31 @@ namespace PlotterDbLib
             ]);
 
             dbContext.SaveChanges();
+        }
+
+
+        private class PlotterDbContext : DbContext
+        {
+            public PlotterDbContext(string db_path) : base() => dbPath = db_path;
+
+
+            public DbSet<Plotter> Plotters { get; set; }
+
+
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+                optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            }
+
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
+                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
+            }
+
+
+            private readonly string dbPath;
         }
 
 

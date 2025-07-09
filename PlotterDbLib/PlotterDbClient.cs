@@ -45,8 +45,8 @@ namespace PlotterDbLib
         }
 
 
-        private readonly HttpClient client;
-        private readonly JsonSerializerOptions options;
+        protected readonly HttpClient client;
+        protected readonly JsonSerializerOptions options;
     }
 
 }
