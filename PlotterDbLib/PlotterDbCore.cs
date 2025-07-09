@@ -11,36 +11,36 @@ using System.Threading.Tasks;
 namespace PlotterDbLib
 {
     [Flags]
-    public enum Color
-    {
-        Monochrome = 1,
-        Colorful = 2,
-    }
-
-    [Flags]
-    public enum Positioning
-    {
-        Flatbed = 1,
-        RollToToll = 2,
-        Hybrid = 4,
-    }
-
-    [Flags]
-    public enum DrawingMethod
-    {
-        Inkjet = 1,
-        Laser = 2,
-        Led = 4,
-        //not finished
-    }
-
-    [Flags]
     public enum PlotterType
     {
         Printer = 1,
         Cutter = 2,
         PrinterCutter = 4
     }
+    [Flags]
+    public enum Color
+    {
+        Monochrome = 1,
+        Colorful = 2,
+    }
+    [Flags]
+    public enum Positioning
+    {
+        Flatbed = 1,
+        RollToToll = 2,
+        Hybrid = 4, // maybe delete
+    }
+    [Flags]
+    public enum DrawingMethod
+    {
+        Pen = 1,
+        Inkjet = 2,
+        ElectroStatic = 4,
+        Laser = 8,
+        Thermal = 16,
+    }
+
+    
 
 
     /// <summary>
@@ -85,6 +85,7 @@ namespace PlotterDbLib
             }
             get => (x: ResolutionX, y: ResolutionY);
         }
+
 
         internal int ResolutionX { set; get; } = 1;
         internal int ResolutionY { set; get; } = 1;

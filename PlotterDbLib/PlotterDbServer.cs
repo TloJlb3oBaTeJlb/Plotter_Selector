@@ -19,22 +19,35 @@ namespace PlotterDbLib
         public PlotterDbServer()
         {
             var dbContext = new PlotterDbContext(DbPath);
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
 
-            dbContext.plotters.Add(new Plotter { 
-                Model = "canon", 
-                Price = 1,
-                Positioning = Positioning.Flatbed
-            });
-            dbContext.plotters.Add(new Plotter { 
-                Model = "anon",
-                Price = 5,
-                Positioning = Positioning.RollToToll
-            });
-            dbContext.SaveChanges();
+            //dbContext.Database.EnsureDeleted();
+            if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
+            else
+            {
+                var tested = new Plotter() { Model = "Test" };
+                dbContext.Plotters.Add(tested);
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (DbUpdateException)
+                {
+                    Console.WriteLine("Error while accessing database. " +
+                        "Database will be rebuilt.");
 
-            listener = new();
+                    dbContext.Database.EnsureDeleted();
+                    dbContext.Database.EnsureCreated();
+
+                    SetUpDataBase(dbContext);
+                }
+                finally
+                {
+                    dbContext.Plotters.Remove(tested);
+                    dbContext.SaveChanges();
+                }
+            }
+
+                listener = new();
             listener.Prefixes.Add(Url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
@@ -64,12 +77,14 @@ namespace PlotterDbLib
                     // stream
                     /*var req = context.Request;
                     byte[] buffer = new byte[req.ContentLength64];
-                    context.Request.InputStream.Read(buffer, 0, (int)req.ContentLength64);
+                    context.Request.InputStream.Read(buffer, 0, 
+                    (int)req.ContentLength64);
                     buffer.ToString();//*/
 
                     Filter filter = GetFilter(context.Request.Url);
                     // forming filtered result
-                    string serialisedList = JsonSerializer.Serialize(GetFiltered(filter), options);
+                    string serialisedList = 
+                        JsonSerializer.Serialize(GetFiltered(filter), options);
                     await SendResponse(response, serialisedList);
                 }
                 catch (ArgumentNullException exception)
@@ -123,7 +138,8 @@ namespace PlotterDbLib
             string serialisedFilter = new(url.LocalPath.Skip(1).ToArray());
             if (serialisedFilter == string.Empty) return new Filter();
 
-            var obj = JsonSerializer.Deserialize(serialisedFilter, typeof(Filter), options);
+            var obj = JsonSerializer.Deserialize<Filter>(serialisedFilter, options);
+            
             if (obj == null) return new Filter();
             return (Filter)obj;
 
@@ -136,7 +152,7 @@ namespace PlotterDbLib
 
             List<Plotter> result = [];
 
-            foreach (var plotter in db.plotters) 
+            foreach (var plotter in db.Plotters) 
                 if (filter.IsSuitable(plotter)) result.Add(plotter);
             return result;
         }
@@ -147,7 +163,7 @@ namespace PlotterDbLib
             public PlotterDbContext(string db_path) : base() => dbPath = db_path;
 
 
-            public DbSet<Plotter> plotters { get; set; }
+            public DbSet<Plotter> Plotters { get; set; }
 
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -164,6 +180,34 @@ namespace PlotterDbLib
 
 
             private readonly string dbPath;
+        }
+
+
+        private static void SetUpDataBase(PlotterDbContext dbContext)
+        {
+            // Test data
+            dbContext.AddRange([
+                new Plotter
+                {
+                    Model = "canon",
+                    Price = 1,
+                    Positioning = Positioning.Flatbed
+                },
+                new Plotter
+                {
+                    Model = "hp",
+                    Price = 5,
+                    Positioning = Positioning.RollToToll
+                },
+                new Plotter
+                {
+                    Model = "Yotta Something",
+                    Price = 100,
+                    DrawingMethod = DrawingMethod.Inkjet
+                }
+            ]);
+
+            dbContext.SaveChanges();
         }
 
 

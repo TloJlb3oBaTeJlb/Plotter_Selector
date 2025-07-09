@@ -38,7 +38,7 @@ namespace PlotterDbLib
 
             // change because this is horrible
             string tmp = JsonSerializer.Serialize(filter, options);
-            var res = await client.GetFromJsonAsync(tmp, typeof(List<Plotter>), options);
+            var res = await client.GetFromJsonAsync<List<Plotter>>(tmp, options);
 
             if (res != null) result = (List<Plotter>)res;
             return result;

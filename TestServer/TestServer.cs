@@ -9,9 +9,9 @@ namespace TestServer
             PlotterDbServer server = new();
             var task = server.RunAsync();
 
-            //while (!server.IsRunning) { }
-            //PlotterDbClient client = new();
-            //(await client.GetFilteredPlottersAsync(new())).ForEach(Console.WriteLine);
+            while (!server.IsRunning) { }
+            PlotterDbClient client = new();
+            (await client.GetFilteredPlottersAsync(new())).ForEach(Console.WriteLine);
 
             await task;
         }
