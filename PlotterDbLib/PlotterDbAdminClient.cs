@@ -1,34 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace PlotterDbLib
+﻿namespace PlotterDbLib
 {
+    /// <summary>
+    /// Клиент, позволяющий модифицировать базу данных.
+    /// </summary>
     public class PlotterDbAdminClient : PlotterDbClient
     {
         public PlotterDbAdminClient() : base() { }
 
 
-        public void ChangePlotter() { }
+        public async Task<HttpResponseMessage> ChangePlotterAsync(Plotter plotter) =>
+            await SendRequestAsync(HttpMethod.Put, plotter);
 
 
-        public async Task<HttpResponseMessage> AddPlotterAsync()//change
-        {
-            //StringContent str = new(, Encoding.UTF8);
-            //JsonContent content = new JsonContent()
-            ByteArrayContent byteContent = new(
-                JsonSerializer.SerializeToUtf8Bytes(new Plotter() { Model = "works?" }, options));
-            //var content = JsonSerializer.Serialize(new Plotter() { Model = "works?" });
-            var res = await client.PostAsync("", byteContent);
-            
-            return res;
-        }
+        public async Task<HttpResponseMessage> AddPlotterAsync(Plotter plotter) =>
+            await SendRequestAsync(HttpMethod.Post, plotter);
 
 
-        public void RemovePlotter() { }
+        public async Task<HttpResponseMessage> RemovePlotterAsync(Plotter plotter) =>
+            await SendRequestAsync(HttpMethod.Delete, plotter);
+
     }
 }

@@ -1,15 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite.Query.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Web;
+
 
 
 namespace PlotterDbLib
@@ -52,15 +44,9 @@ namespace PlotterDbLib
             listener.Prefixes.Add(Url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
-
-            //test - successful
-            //var a = new Plotter { PlotterId = 1 };
-            //dbContext.Remove(a);
-            //dbContext.SaveChanges();
         }
 
 
-        //public bool ContinueToRun { set; get; } = true;
         public string DbPath { init; get; } = "plotters.db";
         public string Url { init; get; } = "http://localhost:1111/";
         public bool IsRunning { get => listener.IsListening; }
@@ -78,7 +64,8 @@ namespace PlotterDbLib
                     while (true)
                     {
                         var context = await listener.GetContextAsync();
-                        Console.WriteLine("Request received");
+                        var request = context.Request;
+                        Console.WriteLine($"Request: {request.HttpMethod} {request.Url}");
 
                         HandleRequestAsync(context);
                     }
@@ -122,7 +109,7 @@ namespace PlotterDbLib
             }
             catch (JsonException exception)
             {
-                Console.WriteLine(exception.Message); // unify logging
+                Console.WriteLine(exception.Message);
                 context.Response.StatusCode = 400;
             }
             context.Response.Close();
@@ -138,6 +125,8 @@ namespace PlotterDbLib
         }
 
 
+        // I dont like that next 3 methods are pretty much duplicates, but I dont
+        // know how to compbine them
         private async Task HandlePostAsync(HttpListenerContext context)
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
@@ -168,7 +157,7 @@ namespace PlotterDbLib
         }
 
 
-        private T GetObjectFromContent<T>(HttpListenerRequest request) where T : class
+        private T GetObjectFromContent<T>(HttpListenerRequest request)
         {
             byte[] buffer = new byte[request.ContentLength64];
             request.InputStream.Read(buffer, 0, (int)request.ContentLength64);

@@ -9,11 +9,27 @@ namespace TestServer
             PlotterDbServer server = new();
             var task = server.StartAsync();
 
+            // Test admin client
             while (!server.IsRunning) { }
             PlotterDbAdminClient client = new();
-            // TODO: Unify requests on client
-            //Console.WriteLine(await client.AddPlotterAsync());
-            (await client.GetFilteredPlottersAsync(new() { Model = ""})).ForEach(Console.WriteLine);
+
+            var plotters = await client.GetFilteredPlottersAsync(new());
+            plotters.ForEach(Console.WriteLine);
+
+            //change test
+            /*Plotter changed = new()
+            {
+                PlotterId = plotters.First().PlotterId,
+                Model = "--Changed--"
+            };
+            Console.WriteLine(await client.ChangePlotterAsync(changed));//*/
+
+            // del test
+            //Console.WriteLine(await client.RemovePlotterAsync(plotters.First()));
+
+            //plotters = await client.GetFilteredPlottersAsync(new());
+            //plotters.ForEach(Console.WriteLine);
+
             server.Stop();
         }
     }

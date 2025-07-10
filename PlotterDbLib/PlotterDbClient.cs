@@ -20,6 +20,9 @@ namespace PlotterDbLib
         }
 
 
+        /// <summary>
+        /// Url адрес сервера базы данных
+        /// </summary>
         public string ServerUrl { init; get; } = "http://localhost:1111/";
 
 
@@ -28,25 +31,35 @@ namespace PlotterDbLib
         /// </summary>
         /// <param name="filter">Параметры фильтрации</param>
         /// <returns>Коллекция плоттеров, удовлетворяющий фильтрам</returns>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<List<Plotter>> GetFilteredPlottersAsync(Filter filter)
         {
-            
-            ByteArrayContent byteContent = new(
-                JsonSerializer.SerializeToUtf8Bytes(filter, options));
+            var response = await SendRequestAsync(HttpMethod.Get, filter);
+            return await GetObjectFromResponse<List<Plotter>>(response);
+        }
 
-            HttpRequestMessage message = new(HttpMethod.Get, "") {
+
+        protected async Task<HttpResponseMessage> SendRequestAsync<T>(
+            HttpMethod method, T param)
+        {
+            ByteArrayContent byteContent = new(
+                JsonSerializer.SerializeToUtf8Bytes(param, options));
+            HttpRequestMessage message = new(method, "")
+            {
                 Content = byteContent
             };
 
             var response = await client.SendAsync(message);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new HttpRequestException(
-                    "Request failed, status code: " + response.StatusCode);
+            return response.EnsureSuccessStatusCode();
+        }
 
-            var res = await response.Content.ReadFromJsonAsync<List<Plotter>>(options);
 
-            if (res != null) return res;
-            return [];
+        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        {
+            var result = await response.Content.ReadFromJsonAsync<T>(options) ??
+                throw new HttpRequestException("Could not get object from content");
+
+            return result;
         }
 
 
