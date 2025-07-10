@@ -40,7 +40,7 @@ namespace PlotterDbLib
                 }
             }
 
-                listener = new();
+            listener = new();
             listener.Prefixes.Add(Url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
@@ -108,6 +108,11 @@ namespace PlotterDbLib
                 }
             }
             catch (JsonException exception)
+            {
+                Console.WriteLine(exception.Message);
+                context.Response.StatusCode = 400;
+            }
+            catch (DbUpdateException exception)
             {
                 Console.WriteLine(exception.Message);
                 context.Response.StatusCode = 400;
@@ -206,7 +211,7 @@ namespace PlotterDbLib
                 {
                     Model = "hp",
                     Price = 5,
-                    Positioning = Positioning.RollToToll
+                    Positioning = Positioning.Drum
                 },
                 new Plotter
                 {
@@ -234,11 +239,11 @@ namespace PlotterDbLib
             }
 
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            /*protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
-            }
+                //modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
+                //modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
+            }//*/
 
 
             private readonly string dbPath;

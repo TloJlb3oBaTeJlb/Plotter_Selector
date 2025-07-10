@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-
-namespace PlotterDbLib
+﻿namespace PlotterDbLib
 {
     [Flags]
     public enum PlotterType
@@ -10,19 +7,21 @@ namespace PlotterDbLib
         Cutter = 2,
         PrinterCutter = 4
     }
+
+    public enum Positioning
+    {
+        Drum = 1,
+        //RollToToll = 2,
+        Flatbed = 2,
+    }
+
     [Flags]
-    public enum Color
+    public enum PrintingType
     {
         Monochrome = 1,
         Colorful = 2,
     }
-    [Flags]
-    public enum Positioning
-    {
-        Flatbed = 1,
-        RollToToll = 2,
-        Hybrid = 4, // maybe delete
-    }
+    
     [Flags]
     public enum DrawingMethod
     {
@@ -33,8 +32,6 @@ namespace PlotterDbLib
         Thermal = 16,
     }
 
-    
-
 
     /// <summary>
     /// Обладает свойствами, отражающими атрибуты сущности Plotter в даталогической модели.
@@ -42,47 +39,77 @@ namespace PlotterDbLib
     public class Plotter
     {
         public int PlotterId { set; get; }
+
+        
         public string Model { set; get; } = null!;
+        /// <summary>
+        /// Производитель
+        /// </summary>
+        public string Manufacturer { set; get; } = string.Empty;//= null!;
+        /// <summary>
+        /// Формат печати
+        /// </summary>
+        public string Format { set; get; } = string.Empty; // maybe
+        /// <summary>
+        /// Тип материала (Назначение)
+        /// </summary>
+        public string Material { set; get; } = string.Empty; // maybe
+        /// <summary>
+        /// Габариты
+        /// </summary>
+        public string Dimensions { set; get; } = string.Empty; // maybe
+        /// <summary>
+        /// Дополнительная информация
+        /// </summary>
+        public string Addendum { set; get; } = string.Empty;
+
+        /// <summary>
+        /// Цена
+        /// </summary>
         public int Price { set; get; }
+        /// <summary>
+        /// Ширина печати
+        /// </summary>
         public double Width { set; get; }
-        public PlotterType PlotterType
-        {
-            set => enumProperties[typeof(PlotterType).Name] = value;
-            get => (PlotterType)enumProperties[typeof(PlotterType).Name];
-        }
-        public Positioning Positioning 
-        {
-            set => enumProperties[typeof(Positioning).Name] = value;
-            get => (Positioning)enumProperties[typeof(Positioning).Name];
-        }
-        public Color Color
-        {
-            set => enumProperties[typeof(Color).Name] = value;
-            get => (Color)enumProperties[typeof(Color).Name];
-        }
-        public DrawingMethod DrawingMethod
-        {
-            set => enumProperties[typeof(DrawingMethod).Name] = value;
-            get => (DrawingMethod)enumProperties[typeof(DrawingMethod).Name];
-        }
-        [NotMapped]
-        public (int x, int y) Resolution
-        {
-            set
-            {
-                ArgumentOutOfRangeException.ThrowIfLessThan(value.x, 1);
-                ArgumentOutOfRangeException.ThrowIfLessThan(value.y, 1);
+        /// <summary>
+        /// Вес
+        /// </summary>
+        public double Weight { set; get; }
+        /// <summary>
+        /// Наличие жёсткого диска
+        /// </summary>
+        public bool HasHardDrive { set; get; }
 
-                ResolutionX = value.x;
-                ResolutionY = value.y;
-            }
-            get => (x: ResolutionX, y: ResolutionY);
+        /// <summary>
+        /// Класс
+        /// </summary>
+        public PlotterType PlotterType { set; get; }
+        /// <summary>
+        /// Способ нанесения изображения
+        /// </summary>
+        public DrawingMethod DrawingMethod { set; get; }
+        /// <summary>
+        /// Тип подачи материала
+        /// </summary>
+        public Positioning Positioning { set; get; }
+        /// <summary>
+        /// Тип печати
+        /// </summary>
+        public PrintingType PrintingType { set; get; }
+
+        /// <summary>
+        /// Путь к изображению
+        /// </summary>
+        public string PathToImage { set; get; } = string.Empty;
+
+        internal string[] StringProps
+        {
+            get => [Model, Manufacturer, Format, Material];
         }
-
-
-        internal int ResolutionX { set; get; } = 1;
-        internal int ResolutionY { set; get; } = 1;
-
+        internal Enum[] EnumProps
+        {
+            get => [PlotterType, DrawingMethod, Positioning, PrintingType];
+        }
 
         /// <summary>
         /// Метод для вывода объекта в консоль. Нужен для отладки.
@@ -92,24 +119,18 @@ namespace PlotterDbLib
             string str = @$"[{PlotterId}] Model: {Model}
 Price: {Price},
 Width: {Width},
+Weight: {Weight},
 ";
-            foreach (var property in enumProperties) 
-                str += $"{property.Key}: {property.Value},\n";
 
-            str += $"Resolution: {Resolution}";
+            foreach (var property in EnumProps) 
+                str += $"{property.GetType().Name}: {property},\n";
+            foreach (var property in StringProps)
+                str += $"{property.GetType().Name}: {property},\n";
+            str += $"HasHardDrive: {HasHardDrive},\n";
+            str += $"Addendum: {Addendum}";
 
             return str;
         }
-
-
-        internal Dictionary<string, Enum> enumProperties { get; } = new()
-        {
-            { typeof(PlotterType).Name, PlotterType.Printer },
-            { typeof(Positioning).Name, Positioning.Flatbed },
-            { typeof(Color).Name, Color.Colorful },
-            { typeof(DrawingMethod).Name, DrawingMethod.Inkjet }, // maybe change default value
-        };
-
     }
 
 
@@ -121,12 +142,25 @@ Width: {Width},
     /// ( <c>|</c> ).</para>
     /// </summary>
     public class Filter
-    {
+    {   
+        
         /// <summary>
         /// Будут найдены плоттеры, модель которых содержит данную строку. 
         /// Регистр не учитывается.
         /// </summary>
         public string Model { set; get; } = string.Empty;
+        /// <summary>
+        /// Производитель
+        /// </summary>
+        public string Manufacturer { set; get; } = string.Empty;//= null!;
+        /// <summary>
+        /// Формат печати
+        /// </summary>
+        public string Format { set; get; } = string.Empty; // maybe
+        /// <summary>
+        /// Тип материала (Назначение)
+        /// </summary>
+        public string Material { set; get; } = string.Empty; // maybe
         /// <summary>
         /// Диапазон цен. Кидает исключение если хотя бы одно из чисел меньше 
         /// нуля или максимум меньше минимума.
@@ -159,34 +193,31 @@ Width: {Width},
             }
             get => widthRange;
         }
-        public PlotterType PlotterType
-        {
-            set => enumProperties[typeof(PlotterType).Name] = value;
-            get => (PlotterType)enumProperties[typeof(PlotterType).Name];
-        }
-        public Positioning Positioning
-        {
-            set => enumProperties[typeof(Positioning).Name] = value;
-            get => (Positioning)enumProperties[typeof(Positioning).Name];
-        }
-        public Color Color
-        {
-            set => enumProperties[typeof(Color).Name] = value;
-            get => (Color)enumProperties[typeof(Color).Name];
-        }
-        public DrawingMethod DrawingMethod
-        {
-            set => enumProperties[typeof(DrawingMethod).Name] = value;
-            get => (DrawingMethod)enumProperties[typeof(DrawingMethod).Name];
-        }
+        
+        /// <summary>
+        /// Класс
+        /// </summary>
+        public PlotterType PlotterType { set; get; }
+        /// <summary>
+        /// Способ нанесения изображения
+        /// </summary>
+        public DrawingMethod DrawingMethod { set; get; }
+        /// <summary>
+        /// Тип подачи материала
+        /// </summary>
+        public Positioning Positioning { set; get; }
+        /// <summary>
+        /// Тип печати
+        /// </summary>
+        public PrintingType PrintingType { set; get; }
 
 
         internal bool IsSuitable(Plotter plotter)
         {
-            return plotter.Model.Contains(Model) &&
+            return DoesFitStringFilters(plotter) &&
                 IsInPriceRange(plotter) &&
                 IsInWidthRange(plotter) &&
-                AreEnumsMatch(plotter);
+                AreEnumsMatching(plotter);
         }
 
 
@@ -200,24 +231,38 @@ Width: {Width},
             (plotter.Width >= WidthRange.min && plotter.Width <= WidthRange.max);
 
 
-        private bool AreEnumsMatch(Plotter plotter)
+        private bool AreEnumsMatching(Plotter plotter)
         {
-            foreach(var key in enumProperties.Keys) 
-                if (Convert.ToBoolean(enumProperties[key]) && 
-                    !enumProperties[key].HasFlag(plotter.enumProperties[key])) 
-                    return false;
+            foreach(var pair in EnumProps.Zip(plotter.EnumProps))
+            {
+                if (Convert.ToBoolean(pair.First) &&
+                    !pair.First.HasFlag(pair.Second)) return false;
+            }
             return true;
         }
 
 
-        private Dictionary<string, Enum> enumProperties { get; } = new()
+        private bool DoesFitStringFilters(Plotter plotter)
         {
-            { typeof(PlotterType).Name, (PlotterType)0 },
-            { typeof(Positioning).Name, (Positioning)0 },
-            { typeof(Color).Name, (Color)0 },
-            { typeof(DrawingMethod).Name, (DrawingMethod)0 },
-        };
+            foreach (var pair in StringProps.Zip(plotter.StringProps))
+            {
+                if (!pair.Second.Contains(pair.First)) return false;
+            }
+            return true;
+        }
+
+
         private (int min, int max) priceRange;
         private (double min, double max) widthRange;
+
+        private string[] StringProps 
+        {
+            get => [Model, Manufacturer, Format, Material];
+        }
+        private Enum[] EnumProps
+        {
+            get => [PlotterType, DrawingMethod, Positioning, PrintingType];
+        }
+
     }
 }

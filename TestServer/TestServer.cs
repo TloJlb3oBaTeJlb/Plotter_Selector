@@ -13,8 +13,10 @@ namespace TestServer
             while (!server.IsRunning) { }
             PlotterDbAdminClient client = new();
 
-            var plotters = await client.GetFilteredPlottersAsync(new());
+            var plotters = await client.GetFilteredPlottersAsync(new() { Model = "a"});
             plotters.ForEach(Console.WriteLine);
+
+            //Console.WriteLine(await client.AddPlotterAsync(plotters.First()));
 
             //change test
             /*Plotter changed = new()

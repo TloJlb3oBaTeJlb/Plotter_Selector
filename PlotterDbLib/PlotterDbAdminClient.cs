@@ -8,12 +8,12 @@
         public PlotterDbAdminClient() : base() { }
 
 
-        public async Task<HttpResponseMessage> ChangePlotterAsync(Plotter plotter) =>
-            await SendRequestAsync(HttpMethod.Put, plotter);
-
-
         public async Task<HttpResponseMessage> AddPlotterAsync(Plotter plotter) =>
             await SendRequestAsync(HttpMethod.Post, plotter);
+
+
+        public async Task<HttpResponseMessage> UpdatePlotterAsync(Plotter plotter) =>
+            await SendRequestAsync(HttpMethod.Put, plotter);
 
 
         public async Task<HttpResponseMessage> RemovePlotterAsync(Plotter plotter) =>
