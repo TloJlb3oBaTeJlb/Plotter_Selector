@@ -7,8 +7,8 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow"
-        Height="450"
-        Width="800"
+        Height="500"
+        Width="1000"
         WindowStyle="None"
         AllowsTransparency="True"
         StateChanged="Window_StateChanged">
@@ -141,7 +141,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition
-                        Width="230"/>
+                        Width="280"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
@@ -168,7 +168,7 @@
                         <StackPanel
                             Grid.Row="1"
                             Orientation="Vertical"
-                            Width="230"
+                            Width="280"
                             Margin="3,0,0,0"
                             HorizontalAlignment="Left">
 
@@ -182,21 +182,20 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <CheckBox
-                                        x:Name="FilterTypeMajorCheckBox"
+                                    <TextBlock
+                                        x:Name="FilterTypeText"
                                         Grid.Column="0"
-                                        Content="Все"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Тип плоттера: Любой"
                                         FontSize="15"
-                                        FontWeight="Medium"
-                                        IsThreeState="True"
-                                        Click="FilterTypeMajorCheckBox_Click"/>
+                                        FontWeight="Medium"/>
 
                                     <Button
                                         x:Name="FilterTypeButton"
                                         Grid.Column="1"
                                         Click="FilterTypeButton_Click"
                                         ToolTip="Показать типы"
-                                        Style="{StaticResource ParentFilterButton}">
+                                        Style="{StaticResource FilterButton}">
                                         <Button.Content>
                                             <Path
                                                 x:Name="FilterTypeButtonIcon"
@@ -210,30 +209,27 @@
                                 </Grid>
 
                                 <StackPanel
-                                    x:Name="FilterTypeChildCheckBoxes"
+                                    x:Name="FilterTypeCheckBoxes"
                                     Margin="10,0,0,0"
                                     Orientation="Vertical">
 
                                     <CheckBox
-                                        x:Name="FilterTypeChild1"
-                                        Content="Тип 1"
-                                        Checked="ChildCheckBox_Checked"
-                                        Unchecked="ChildCheckBox_Unchecked"
-                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+                                        x:Name="FilterType1"
+                                        Content="Печатающий"
+                                        Click="FilterTypeCheckBox_Changed" 
+                                        Style="{StaticResource FilterCheckBox}"/>
 
                                     <CheckBox
-                                        x:Name="FilterTypeChild2"
-                                        Content="Тип 2"
-                                        Checked="ChildCheckBox_Checked"
-                                        Unchecked="ChildCheckBox_Unchecked"
-                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+                                        x:Name="FilterType2"
+                                        Content="Режущий"
+                                        Click="FilterTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
 
                                     <CheckBox
-                                        x:Name="FilterTypeChild3"
-                                        Content="Тип 3"
-                                        Checked="ChildCheckBox_Checked"
-                                        Unchecked="ChildCheckBox_Unchecked"
-                                        Style="{StaticResource FilterTypeChildCheckBox}"/>
+                                        x:Name="FilterType3"
+                                        Content="Гибридный"
+                                        Click="FilterTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
                                 </StackPanel>
                                 
                             </StackPanel>
@@ -274,6 +270,80 @@
                                         x:Name="FilterPriceTo"
                                         Style="{StaticResource FilterPriceTextBox}"/>
                                 </Grid>
+
+                            </StackPanel>
+
+                            <StackPanel
+                                Name="FilterPrintingType"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterPrintingTypeText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Тип печати: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterPrintingTypeButton"
+                                        Grid.Column="1"
+                                        Click="FilterPrintingTypeButton_Click"
+                                        ToolTip="Показать типы"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterPrintingTypeButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <StackPanel
+                                    x:Name="FilterPrintingTypeCheckBoxes"
+                                    Margin="10,0,0,0"
+                                    Orientation="Vertical">
+
+                                    <CheckBox
+                                        x:Name="FilterPrintingType1"
+                                        Content="Перьевая"
+                                        Click="FilterPrintingTypeCheckBox_Changed" 
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterPrintingType2"
+                                        Content="Струйная"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterPrintingType3"
+                                        Content="Электрическая"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterPrintingType4"
+                                        Content="Лазерная (Светодиодная)"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterPrintingType5"
+                                        Content="С термоподдачей"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+                                </StackPanel>
 
                             </StackPanel>
                             

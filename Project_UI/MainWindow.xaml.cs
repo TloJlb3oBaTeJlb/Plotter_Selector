@@ -23,7 +23,13 @@ namespace Project_UI
         public MainWindow()
         {
             InitializeComponent();
-            UpdateMasterCheckBoxState();
+            UpdateContent();
+        }
+
+        private void UpdateContent()
+        {
+            UpdateFilterTypeTextBlockState();
+            UpdateFilterPrintingTypeTextBlockState();
         }
 
         //Изменяет вид кнопок, подсказки и отступы при разных режимах окна
@@ -96,113 +102,118 @@ namespace Project_UI
             this.Close();
         }
 
-
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void FilterTypeMajorCheckBox_Click(object sender, RoutedEventArgs e)
+        private void FilterTypeCheckBox_Changed(object sender, RoutedEventArgs e)
         {
-            e.Handled = true;
-
-            bool newIsCheckedState = (FilterTypeMajorCheckBox.IsChecked == true);
-
-            _isUpdatingFilterTypeMajorCheckBox = true;
-            try
-            {
-                FilterTypeMajorCheckBox.IsChecked = newIsCheckedState;
-                SetAllChildCheckBoxes(newIsCheckedState);
-            }
-            finally
-            {
-                _isUpdatingFilterTypeMajorCheckBox = false;
-            }
+            UpdateFilterTypeTextBlockState();
         }
 
-        private void SetAllChildCheckBoxes (bool isChecked)
+        private void UpdateFilterTypeTextBlockState()
         {
-            _isUpdatingFilterTypeMajorCheckBox = true;
-            foreach (CheckBox cb in FilterTypeChildCheckBoxes.Children.OfType<CheckBox>())
+            var checkBoxes = FilterTypeCheckBoxes.Children.OfType<CheckBox>().ToList();
+
+            int checkedCount = checkBoxes.Count(cb => cb.IsChecked == true);
+
+            if (checkedCount == checkBoxes.Count || checkedCount == 0)
             {
-                cb.IsChecked = isChecked;
-            }
-            _isUpdatingFilterTypeMajorCheckBox = false;
-        }
-
-        private void ChildCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            UpdateMasterCheckBoxState();
-        }
-
-        private void ChildCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            UpdateMasterCheckBoxState();
-        }
-
-        private void UpdateMasterCheckBoxState()
-        {
-            _isUpdatingFilterTypeMajorCheckBox = true;
-
-            var childCheckBoxes = FilterTypeChildCheckBoxes.Children.OfType<CheckBox>().ToList();
-
-            if (!childCheckBoxes.Any())
-            {
-                FilterTypeMajorCheckBox.IsChecked = false;
-                FilterTypeMajorCheckBox.Content = "Все фильтры";
+                FilterTypeText.Text = "Тип плоттера: Любой";
             }
             else
             {
-                int checkedCount = childCheckBoxes.Count(cb => cb.IsChecked == true);
-
-                if (checkedCount == childCheckBoxes.Count)
+                FilterTypeText.Text = string.Empty;
+                foreach (CheckBox cb in FilterTypeCheckBoxes.Children.OfType<CheckBox>())
                 {
-                    FilterTypeMajorCheckBox.IsChecked = true;
-                    FilterTypeMajorCheckBox.Content = "Все фильтры";
-                }
-                else if (checkedCount == 0)
-                {
-                    FilterTypeMajorCheckBox.IsChecked = false;
-                    FilterTypeMajorCheckBox.Content = "Все фильтры";
-                }
-                else
-                {
-                    FilterTypeMajorCheckBox.IsChecked = null;
-                    FilterTypeMajorCheckBox.Content = string.Empty;
-                    foreach (CheckBox cb in FilterTypeChildCheckBoxes.Children.OfType<CheckBox>())
+                    if (cb.IsChecked == true)
                     {
-                        if (cb.IsChecked == true)
+                        if (FilterTypeText.Text.ToString() == string.Empty)
                         {
-                            if (FilterTypeMajorCheckBox.Content.ToString() == string.Empty)
-                            {
-                                FilterTypeMajorCheckBox.Content = cb.Content;
-                            }
-                            else
-                            {
-                                FilterTypeMajorCheckBox.Content = FilterTypeMajorCheckBox.Content.ToString() + ", "+ cb.Content;
-                            }
+                            FilterTypeText.Text = "Тип плоттера: " + cb.Content;
+                        }
+                        else
+                        {
+                            FilterTypeText.Text = FilterTypeText.Text.ToString() + ", " + cb.Content;
                         }
                     }
                 }
             }
-            _isUpdatingFilterTypeMajorCheckBox = false;
         }
 
         private void FilterTypeButton_Click(object sender, RoutedEventArgs e)
         {
-            if(FilterTypeChild1.Visibility == Visibility.Collapsed)
+            if (FilterType1.Visibility == Visibility.Collapsed)
             {
-                FilterTypeChild1.Visibility = Visibility.Visible;
-                FilterTypeChild2.Visibility = Visibility.Visible;
-                FilterTypeChild3.Visibility = Visibility.Visible;
+                foreach (CheckBox cb in FilterTypeCheckBoxes.Children.OfType<CheckBox>())
+                {
+                    cb.Visibility = Visibility.Visible;
+                }
                 FilterTypeButtonIcon.Data = (Geometry)this.FindResource("AngleUp");
             }
-            else if(FilterTypeChild1.Visibility == Visibility.Visible)
+            else if(FilterType1.Visibility == Visibility.Visible)
             {
-                FilterTypeChild1.Visibility = Visibility.Collapsed;
-                FilterTypeChild2.Visibility = Visibility.Collapsed;
-                FilterTypeChild3.Visibility = Visibility.Collapsed;
+                foreach (CheckBox cb in FilterTypeCheckBoxes.Children.OfType<CheckBox>())
+                {
+                    cb.Visibility = Visibility.Collapsed;
+                }
                 FilterTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
+            }
+        }
+
+        private void FilterPrintingTypeCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            UpdateFilterPrintingTypeTextBlockState();
+        }
+
+        private void UpdateFilterPrintingTypeTextBlockState()
+        {
+            var checkBoxes = FilterPrintingTypeCheckBoxes.Children.OfType<CheckBox>().ToList();
+
+            int checkedCount = checkBoxes.Count(cb => cb.IsChecked == true);
+
+            if (checkedCount == checkBoxes.Count  || checkedCount == 0)
+            {
+                FilterPrintingTypeText.Text = "Тип печати: Любая";
+            }
+            else
+            {
+                FilterPrintingTypeText.Text = string.Empty;
+                foreach (CheckBox cb in FilterPrintingTypeCheckBoxes.Children.OfType<CheckBox>())
+                {
+                    if (cb.IsChecked == true)
+                    {
+                        if (FilterPrintingTypeText.Text.ToString() == string.Empty)
+                        {
+                            FilterPrintingTypeText.Text = "Тип печати: " + cb.Content;
+                        }
+                        else
+                        {
+                            FilterPrintingTypeText.Text = FilterPrintingTypeText.Text.ToString() + ", " + cb.Content;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void FilterPrintingTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilterPrintingType1.Visibility == Visibility.Collapsed)
+            {
+                foreach (CheckBox cb in FilterPrintingTypeCheckBoxes.Children.OfType<CheckBox>())
+                {
+                    cb.Visibility = Visibility.Visible;
+                }
+                FilterPrintingTypeButtonIcon.Data = (Geometry)this.FindResource("AngleUp");
+            }
+            else if (FilterPrintingType1.Visibility == Visibility.Visible)
+            {
+                foreach (CheckBox cb in FilterPrintingTypeCheckBoxes.Children.OfType<CheckBox>())
+                {
+                    cb.Visibility = Visibility.Collapsed;
+                }
+                FilterPrintingTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
             }
         }
     }

@@ -78,35 +78,34 @@
     </Style>
 
     <Style x:Key="FilterItem" TargetType="StackPanel">
-        <Setter Property="Width" Value="227"/>
+        <Setter Property="Width" Value="277"/>
         <Setter Property="Margin" Value="0,2"/>
         <Setter Property="Orientation" Value="Vertical"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
-    <Style x:Key="ParentFilterButton" TargetType="Button">
+    <Style x:Key="FilterButton" TargetType="Button">
         <Setter Property="Height" Value="20"/>
         <Setter Property="Width" Value="20"/>
     </Style>
 
-    <Style x:Key="FilterTypeChildCheckBox" TargetType="CheckBox">
+    <Style x:Key="FilterCheckBox" TargetType="CheckBox">
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="IsChecked" Value="False"/>
         <Setter Property="Visibility" Value="Collapsed"/>
     </Style>
 
     <Style x:Key="FilterPriceText" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="Padding" Value="0,5,0,0"/>
-        <Setter Property="Margin" Value="17,0,0,3"/>
+        <Setter Property="Margin" Value="15,0,0,3"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="LightGray"/>
     </Style>
 
     <Style x:Key="FilterPriceTextBox" TargetType="TextBox">
-        <Setter Property="Width" Value="70"/>
+        <Setter Property="Width" Value="100"/>
         <Setter Property="Height" Value="18"/>
         <Setter Property="Margin" Value="0,0,3,0"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
