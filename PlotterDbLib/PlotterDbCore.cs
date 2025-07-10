@@ -40,7 +40,9 @@
     {
         public int PlotterId { set; get; }
 
-        
+        /// <summary>
+        /// Модель плоттера
+        /// </summary>
         public string Model { set; get; } = null!;
         /// <summary>
         /// Производитель
@@ -150,21 +152,22 @@ Weight: {Weight},
         /// </summary>
         public string Model { set; get; } = string.Empty;
         /// <summary>
-        /// Производитель
+        /// Фильтр по производителю
         /// </summary>
         public string Manufacturer { set; get; } = string.Empty;//= null!;
         /// <summary>
-        /// Формат печати
+        /// Фильтр по формату печати
         /// </summary>
         public string Format { set; get; } = string.Empty; // maybe
         /// <summary>
-        /// Тип материала (Назначение)
+        /// Фильтр по типу материала
         /// </summary>
         public string Material { set; get; } = string.Empty; // maybe
         /// <summary>
         /// Диапазон цен. Кидает исключение если хотя бы одно из чисел меньше 
         /// нуля или максимум меньше минимума.
         /// </summary>
+
         public (int min, int max) PriceRange
         {
             set
@@ -193,21 +196,21 @@ Weight: {Weight},
             }
             get => widthRange;
         }
-        
+
         /// <summary>
-        /// Класс
+        /// Фильтр по классу
         /// </summary>
         public PlotterType PlotterType { set; get; }
         /// <summary>
-        /// Способ нанесения изображения
+        /// Фильтр по способу нанесения изображения
         /// </summary>
         public DrawingMethod DrawingMethod { set; get; }
         /// <summary>
-        /// Тип подачи материала
+        /// Фильтр по типу подачи материала
         /// </summary>
         public Positioning Positioning { set; get; }
         /// <summary>
-        /// Тип печати
+        /// Фильтр по типу печати
         /// </summary>
         public PrintingType PrintingType { set; get; }
 
