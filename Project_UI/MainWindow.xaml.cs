@@ -22,53 +22,47 @@ namespace Project_UI
     public partial class MainWindow : Window
     {
 
-        private ObservableCollection<FilterOption>? _typeOptions;
-        private ObservableCollection<FilterOption>? _printingTypeOptions;
-        private ObservableCollection<FilterOption>? _manufacturerOptions;
+        private ObservableCollection<FilterOption> _typeOptions;
+        private ObservableCollection<FilterOption> _printingTypeOptions;
+        private ObservableCollection<FilterOption> _manufacturerOptions;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            _typeOptions = CreateFilterOptions("печатающий", "режущий", "гибридный");
+            FilterTypeListBox.ItemsSource = _typeOptions;
             InitializeFilterType();
+
+            _printingTypeOptions = CreateFilterOptions("перьевой", "струйный", "электрический", "лазерный (светодиодный)", "с термоподдачей");
+            FilterPrintingTypeListBox.ItemsSource = _printingTypeOptions;
             InitializeFilterPrintingType();
+
+            _manufacturerOptions = CreateFilterOptions("Производитель 1","Производитель 2","Производитель 3","Производитель 4");
+            FilterManufacturerListBox.ItemsSource = _manufacturerOptions;
             InitializeFilterManufacturer();
         }
 
         private void InitializeFilterType()
         {
-            _typeOptions = CreateFilterOptions("печатающий", "режущий", "гибридный");
-            FilterTypeListBox.ItemsSource = _typeOptions;
-
             foreach (var option in _typeOptions)
             {
                 option.PropertyChanged += FilterOption_IsSelectedChanged;
             }
 
             UpdateFilterHeaderText(FilterTypeListBox, FilterTypeText, "Тип плоттера");
-
-            FilterTypeListBox.Visibility = Visibility.Collapsed;
-            FilterTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
         }
         private void InitializeFilterPrintingType()
         {
-            _printingTypeOptions = CreateFilterOptions("перьевой", "струйный", "электрический", "лазерный (светодиодный)", "с термоподдачей");
-            FilterPrintingTypeListBox.ItemsSource = _printingTypeOptions;
-
             foreach (var option in _printingTypeOptions)
             {
                 option.PropertyChanged += FilterOption_IsSelectedChanged;
             }
 
             UpdateFilterHeaderText(FilterPrintingTypeListBox, FilterPrintingTypeText, "Способ печати");
-
-            FilterPrintingTypeListBox.Visibility = Visibility.Collapsed;
-            FilterPrintingTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
         }
         private void InitializeFilterManufacturer()
         {
-            _manufacturerOptions = CreateFilterOptions("Производитель 1","Производитель 2","Производитель 3","Производитель 4");
-            FilterManufacturerListBox.ItemsSource = _manufacturerOptions;
             
             foreach(var option in _manufacturerOptions)
             {
@@ -76,9 +70,6 @@ namespace Project_UI
             }
             
             UpdateFilterHeaderText(FilterManufacturerListBox, FilterManufacturerText, "Производитель");
-
-            FilterManufacturerListBox.Visibility = Visibility.Collapsed;
-            FilterManufacturerButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
         }
 
         /// <summary>
