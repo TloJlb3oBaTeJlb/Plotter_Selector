@@ -165,15 +165,55 @@
                             Background="LightGray"
                             Padding="6,3"/>
 
-                        <StackPanel
+                        <ListBox
                             Grid.Row="1"
-                            Orientation="Vertical"
+                            ItemContainerStyle="{StaticResource ListBoxItem}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             Width="280"
-                            Margin="3,0,0,0"
+                            Margin="0,0,0,0"
+                            Padding="4,0,0,0"
                             HorizontalAlignment="Left">
+                            
+                            <StackPanel
+                                x:Name="FilterPrice"
+                                Style="{StaticResource FilterItem}">
+
+                                <TextBlock
+                                    Text="Цена:"
+                                    FontSize="15"
+                                    FontWeight="Medium"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0,5*"/>
+                                        <ColumnDefinition Width="0,5*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Text="От:"
+                                        Style="{StaticResource FilterNumericText}"/>
+
+                                    <TextBox
+                                        Grid.Column="0"
+                                        x:Name="FilterPriceFrom"
+                                        Style="{StaticResource FilterNumericTextBox}"/>
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Text="до:"
+                                        Style="{StaticResource FilterNumericText}"/>
+
+                                    <TextBox
+                                        Grid.Column="1"
+                                        x:Name="FilterPriceTo"
+                                        Style="{StaticResource FilterNumericTextBox}"/>
+                                </Grid>
+                            </StackPanel>
 
                             <StackPanel
                                 x:Name="FilterType"
+                                Background="#f5f5f5"
                                 Style="{StaticResource FilterItem}">
 
                                 <Grid>
@@ -231,46 +271,6 @@
                                         Click="FilterTypeCheckBox_Changed"
                                         Style="{StaticResource FilterCheckBox}"/>
                                 </StackPanel>
-                                
-                            </StackPanel>
-                            
-                            <StackPanel
-                                x:Name="FilterPrice"
-                                Background="#f5f5f5"
-                                Style="{StaticResource FilterItem}">
-
-                                <TextBlock
-                                    Text="Цена:"
-                                    FontSize="15"
-                                    FontWeight="Medium"/>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="0,5*"/>
-                                        <ColumnDefinition Width="0,5*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Text="От:"
-                                        Style="{StaticResource FilterNumericText}"/>
-
-                                    <TextBox
-                                        Grid.Column="0"
-                                        x:Name="FilterPriceFrom"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
-
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Text="до:"
-                                        Style="{StaticResource FilterNumericText}"/>
-
-                                    <TextBox
-                                        Grid.Column="1"
-                                        x:Name="FilterPriceTo"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
-                                </Grid>
-
                             </StackPanel>
 
                             <StackPanel
@@ -344,7 +344,6 @@
                                         Click="FilterPrintingTypeCheckBox_Changed"
                                         Style="{StaticResource FilterCheckBox}"/>
                                 </StackPanel>
-
                             </StackPanel>
 
                             <StackPanel
@@ -383,10 +382,82 @@
                                         x:Name="FilterPrintingWidthTo"
                                         Style="{StaticResource FilterNumericTextBox}"/>
                                 </Grid>
-
                             </StackPanel>
 
-                        </StackPanel>
+                            <StackPanel
+                                x:Name="FilterManufacturer"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterManufacturerText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Тип печати: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterManufacturerButton"
+                                        Grid.Column="1"
+                                        Click="FilterPrintingTypeButton_Click"
+                                        ToolTip="Показать типы"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterManufcturerButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <StackPanel
+                                    x:Name="FilterManifacturerCheckBoxes"
+                                    Margin="10,0,0,0"
+                                    Orientation="Vertical">
+
+                                    <CheckBox
+                                        x:Name="FilterManifacturer1"
+                                        Content="Перьевая"
+                                        Click="FilterPrintingTypeCheckBox_Changed" 
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterManifacturer2"
+                                        Content="Струйная"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterManifacturer3"
+                                        Content="Электрическая"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterManifacturer4"
+                                        Content="Лазерная (Светодиодная)"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+
+                                    <CheckBox
+                                        x:Name="FilterManifacturer5"
+                                        Content="С термоподдачей"
+                                        Click="FilterPrintingTypeCheckBox_Changed"
+                                        Style="{StaticResource FilterCheckBox}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </ListBox>
                     </Grid>
                 </Border>
 
