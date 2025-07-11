@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,17 +22,63 @@ namespace Project_UI
     public partial class MainWindow : Window
     {
 
-        bool _isUpdatingFilterTypeMajorCheckBox = false;
+        private ObservableCollection<FilterOption>? _typeOptions;
+        private ObservableCollection<FilterOption>? _printingTypeOptions;
+        private ObservableCollection<FilterOption>? _manufacturerOptions;
 
         public MainWindow()
         {
             InitializeComponent();
-            UpdateContent();
+
+            InitializeFilterType();
+            InitializeFilterPrintingType();
+            InitializeFilterManufacturer();
         }
 
-        private void UpdateContent()
+        private void InitializeFilterType()
         {
-            UpdateFilterHeaderText(FilterPrintingTypeCheckBoxes, FilterPrintingTypeText, "Тип печати");
+            _typeOptions = CreateFilterOptions("печатающий", "режущий", "гибридный");
+            FilterTypeListBox.ItemsSource = _typeOptions;
+
+            foreach (var option in _typeOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterTypeListBox, FilterTypeText, "Тип плоттера");
+
+            FilterTypeListBox.Visibility = Visibility.Collapsed;
+            FilterTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
+        }
+        private void InitializeFilterPrintingType()
+        {
+            _printingTypeOptions = CreateFilterOptions("перьевой", "струйный", "электрический", "лазерный (светодиодный)", "с термоподдачей");
+            FilterPrintingTypeListBox.ItemsSource = _printingTypeOptions;
+
+            foreach (var option in _printingTypeOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterPrintingTypeListBox, FilterPrintingTypeText, "Способ печати");
+
+            FilterPrintingTypeListBox.Visibility = Visibility.Collapsed;
+            FilterPrintingTypeButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
+        }
+        private void InitializeFilterManufacturer()
+        {
+            _manufacturerOptions = CreateFilterOptions("Производитель 1","Производитель 2","Производитель 3","Производитель 4");
+            FilterManufacturerListBox.ItemsSource = _manufacturerOptions;
+            
+            foreach(var option in _manufacturerOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+            
+            UpdateFilterHeaderText(FilterManufacturerListBox, FilterManufacturerText, "Производитель");
+
+            FilterManufacturerListBox.Visibility = Visibility.Collapsed;
+            FilterManufacturerButtonIcon.Data = (Geometry)this.FindResource("AngleDown");
         }
 
         /// <summary>
@@ -120,82 +170,104 @@ namespace Project_UI
         }
 
         /// <summary>
-        /// Обновляет текст заголовка фильтра в зависимости от выбранных CheckBox
+        /// Универсальная функция для создания коллекции FilterOption
         /// </summary>
-        /// <param name="checkBoxContainer">StackPanel, содержащий CheckBox'ы фильтра.</param>
-        /// <param name="headerTextBlock">TextBlock, в котором отображается заголовок фильтра</param>
-        /// <param name="filterCategoryName">Имя категории фильтра</param>
-        private void UpdateFilterHeaderText(StackPanel checkBoxContainer, TextBlock headerTextBlock, string filterCategoryName)
+        /// <param name="optionNames">Массив строк с названиями опций</param>
+        /// <returns>ObservableCollection<FilterOption> с созданными опциями</returns>
+        private ObservableCollection<FilterOption> CreateFilterOptions(params string[] optionNames)
         {
-            var checkBoxes = checkBoxContainer.Children.OfType<CheckBox>().ToList();
-
-            int checkedCount = checkBoxes.Count(cb => cb.IsChecked == true);
-
-            if (checkedCount == checkBoxes.Count || checkedCount == 0)
+            var options = new ObservableCollection<FilterOption>();
+            foreach (var name in optionNames)
             {
-                headerTextBlock.Text = $"{filterCategoryName}: Любой";
+                options.Add(new FilterOption { Name = name, IsSelected = false });
+            }
+            return options;
+        }
+
+        private void UpdateFilterHeaderText(ListBox filterListBox, TextBlock headerTextBlock, string filterCategoryName)
+        {
+            var allOptions = filterListBox.ItemsSource?.OfType<FilterOption>().ToList();
+
+            if (allOptions == null || !allOptions.Any())
+            {
+                headerTextBlock.Text = $"{filterCategoryName}: любой";
+                return;
+            }
+
+            int selectedCount = allOptions.Count(o => o.IsSelected);
+            int totalCount = allOptions.Count;
+
+            if (selectedCount == totalCount || selectedCount == 0)
+            {
+                headerTextBlock.Text = $"{filterCategoryName}: любой";
             }
             else
             {
-                var selectedNames = checkBoxes.Where(cb => cb.IsChecked == true)
-                                              .Select(cb => cb.Content?.ToString())
-                                              .Where(name => !string.IsNullOrWhiteSpace(name))
-                                              .ToList();
-
-                if (selectedNames.Any())
-                {
-                    headerTextBlock.Text = $"{filterCategoryName}: {string.Join(", ", selectedNames)}";
-                }
-                else
-                {
-                    headerTextBlock.Text = $"{filterCategoryName}: Любой";
-                }
+                var selectedNames = allOptions.Where(o => o.IsSelected)
+                                               .Select(o => o.Name)
+                                               .ToList();
+                headerTextBlock.Text = $"{filterCategoryName}: {string.Join(", ", selectedNames)}";
             }
         }
 
-        /// <summary>
-        /// Переключает видимость CheckBox'ов внутри указанного контейнера и меняет иконку кнопки
-        /// </summary>
-        /// <param name="checkBoxContainer">StackPanel, содержащий CheckBox'ы фильтра</param>
-        /// <param name="iconPath">Элемент Path, представляющий иконку кнопки</param>
-        private void ToggleFilterVisibility(StackPanel checkBoxContainer, Path iconPath)
+        private void ToggleFilterVisibility(ListBox filterListBox, Path iconPath)
         {
-            bool isCurrentlyCollapsed = true;
-            if (checkBoxContainer.Children.OfType<CheckBox>().FirstOrDefault() is CheckBox firstCb)
-            {
-                isCurrentlyCollapsed = (firstCb.Visibility == Visibility.Collapsed);
-            }
+            bool isCurrentlyCollapsed = (filterListBox.Visibility == Visibility.Collapsed);
 
-            Visibility newVisibility = isCurrentlyCollapsed ? Visibility.Visible : Visibility.Collapsed;
-            Geometry newIconData = isCurrentlyCollapsed ? (Geometry)this.FindResource("AngleUp") : (Geometry)this.FindResource("AngleDown");
+            filterListBox.Visibility = isCurrentlyCollapsed ? Visibility.Visible : Visibility.Collapsed;
 
-            foreach (CheckBox cb in checkBoxContainer.Children.OfType<CheckBox>())
-            {
-                cb.Visibility = newVisibility;
-            }
-
-            iconPath.Data = newIconData;
+            iconPath.Data = isCurrentlyCollapsed ? (Geometry)this.FindResource("AngleUp") : (Geometry)this.FindResource("AngleDown");
         }
 
-        //========================================================================
-        private void FilterTypeCheckBox_Changed(object sender, RoutedEventArgs e)
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            UpdateFilterHeaderText(FilterTypeCheckBoxes, FilterTypeText, "Тип плоттера");
+            ListBoxItem? item = sender as ListBoxItem;
+            if (item == null) return;
+
+            FilterOption? dataItem = item.Content as FilterOption;
+            if (dataItem == null) return;
+
+            dataItem.IsSelected = !dataItem.IsSelected;
+
+            e.Handled = true;
         }
 
+        private void FilterOption_IsSelectedChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(FilterOption.IsSelected))
+            {
+                FilterOption? changedOption = sender as FilterOption;
+                if (changedOption == null) return;
+
+                if (_typeOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterTypeListBox, FilterTypeText, "Тип плоттера");
+                }
+                else if (_printingTypeOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterPrintingTypeListBox, FilterPrintingTypeText, "Способ печати");
+                }
+                else if (_manufacturerOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterManufacturerListBox, FilterManufacturerText, "Производитель");
+                }
+            }
+        }
+
+        //
         private void FilterTypeButton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleFilterVisibility(FilterTypeCheckBoxes, FilterTypeButtonIcon);
-        }
-
-        private void FilterPrintingTypeCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            UpdateFilterHeaderText(FilterPrintingTypeCheckBoxes, FilterPrintingTypeText, "Тип печати");
+            ToggleFilterVisibility(FilterTypeListBox, FilterTypeButtonIcon);
         }
 
         private void FilterPrintingTypeButton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleFilterVisibility(FilterPrintingTypeCheckBoxes, FilterPrintingTypeButtonIcon);
+            ToggleFilterVisibility(FilterPrintingTypeListBox, FilterPrintingTypeButtonIcon);
+        }
+
+        private void FilterManufacturerButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterVisibility(FilterManufacturerListBox, FilterManufacturerButtonIcon);
         }
     }
 }

@@ -248,29 +248,24 @@
                                     </Button>
                                 </Grid>
 
-                                <StackPanel
-                                    x:Name="FilterTypeCheckBoxes"
+                                <ListBox
+                                    x:Name="FilterTypeListBox"
                                     Margin="10,0,0,0"
-                                    Orientation="Vertical">
+                                    SelectionMode="Multiple"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    Visibility="Visible">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
 
-                                    <CheckBox
-                                        x:Name="FilterType1"
-                                        Content="Печатающий"
-                                        Click="FilterTypeCheckBox_Changed" 
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterType2"
-                                        Content="Режущий"
-                                        Click="FilterTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterType3"
-                                        Content="Гибридный"
-                                        Click="FilterTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-                                </StackPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
 
                             <StackPanel
@@ -287,7 +282,7 @@
                                         x:Name="FilterPrintingTypeText"
                                         Grid.Column="0"
                                         TextTrimming="CharacterEllipsis"
-                                        Text="Тип печати: Любой"
+                                        Text="Способ печати: Любой"
                                         FontSize="15"
                                         FontWeight="Medium"/>
 
@@ -309,41 +304,24 @@
                                     </Button>
                                 </Grid>
 
-                                <StackPanel
-                                    x:Name="FilterPrintingTypeCheckBoxes"
+                                <ListBox
+                                    x:Name="FilterPrintingTypeListBox"
                                     Margin="10,0,0,0"
-                                    Orientation="Vertical">
+                                    SelectionMode="Multiple"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    Visibility="Visible">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
 
-                                    <CheckBox
-                                        x:Name="FilterPrintingType1"
-                                        Content="Перьевая"
-                                        Click="FilterPrintingTypeCheckBox_Changed" 
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterPrintingType2"
-                                        Content="Струйная"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterPrintingType3"
-                                        Content="Электрическая"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterPrintingType4"
-                                        Content="Лазерная (Светодиодная)"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterPrintingType5"
-                                        Content="С термоподдачей"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-                                </StackPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
 
                             <StackPanel
@@ -398,19 +376,19 @@
                                         x:Name="FilterManufacturerText"
                                         Grid.Column="0"
                                         TextTrimming="CharacterEllipsis"
-                                        Text="Тип печати: Любой"
+                                        Text="Производитель: Любой"
                                         FontSize="15"
                                         FontWeight="Medium"/>
 
                                     <Button
                                         x:Name="FilterManufacturerButton"
                                         Grid.Column="1"
-                                        Click="FilterPrintingTypeButton_Click"
-                                        ToolTip="Показать типы"
+                                        Click="FilterManufacturerButton_Click"
+                                        ToolTip="Показать производителей"
                                         Style="{StaticResource FilterButton}">
                                         <Button.Content>
                                             <Path
-                                                x:Name="FilterManufcturerButtonIcon"
+                                                x:Name="FilterManufacturerButtonIcon"
                                                 Data="{StaticResource AngleDown}"
                                                 Fill="Gray"
                                                 Height="13"
@@ -420,43 +398,27 @@
                                     </Button>
                                 </Grid>
 
-                                <StackPanel
-                                    x:Name="FilterManifacturerCheckBoxes"
+                                <ListBox
+                                    x:Name="FilterManufacturerListBox"
                                     Margin="10,0,0,0"
-                                    Orientation="Vertical">
+                                    SelectionMode="Multiple"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    Visibility="Visible">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
 
-                                    <CheckBox
-                                        x:Name="FilterManifacturer1"
-                                        Content="Перьевая"
-                                        Click="FilterPrintingTypeCheckBox_Changed" 
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterManifacturer2"
-                                        Content="Струйная"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterManifacturer3"
-                                        Content="Электрическая"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterManifacturer4"
-                                        Content="Лазерная (Светодиодная)"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-
-                                    <CheckBox
-                                        x:Name="FilterManifacturer5"
-                                        Content="С термоподдачей"
-                                        Click="FilterPrintingTypeCheckBox_Changed"
-                                        Style="{StaticResource FilterCheckBox}"/>
-                                </StackPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
-
+                            
+                            
                         </ListBox>
                     </Grid>
                 </Border>
