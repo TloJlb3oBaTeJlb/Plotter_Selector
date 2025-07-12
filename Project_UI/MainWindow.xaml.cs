@@ -26,6 +26,9 @@ namespace Project_UI
         private ObservableCollection<FilterOption> _printingTypeOptions;
         private ObservableCollection<FilterOption> _manufacturerOptions;
         private ObservableCollection<FilterOption> _printingFormatOptions;
+        private ObservableCollection<FilterOption> _priningColorOptions;
+        private ObservableCollection<FilterOption> _positioningOptions;
+        private ObservableCollection<FilterOption> _materialOptions;
 
         public MainWindow()
         {
@@ -43,9 +46,21 @@ namespace Project_UI
             FilterManufacturerListBox.ItemsSource = _manufacturerOptions;
             InitializeFilterManufacturer();
 
-            _printingFormatOptions = CreateFilterOptions("Формат 1", "Формат 2", "Формат 3", "Формат 4","1","5","2","6","7","8","9");
+            _printingFormatOptions = CreateFilterOptions("формат 1", "формат 2", "формат 3", "формат 4","1","5","2","6","7","8","9");
             FilterPrintingFormatListBox.ItemsSource = _printingFormatOptions;
             InitializerFilterPrintingFormat();
+
+            _priningColorOptions = CreateFilterOptions("цветная", "мнонхромная");
+            FilterPrintingColorListBox.ItemsSource = _priningColorOptions;
+            InitializeFilterPrinitgColor();
+
+            _positioningOptions = CreateFilterOptions("рулонный", "барабанный", "планшетный");
+            FilterPositioningListBox.ItemsSource = _positioningOptions;
+            InitializeFilterPositioning();
+
+            _materialOptions = CreateFilterOptions("материал 1", "материал 2", "материал 3", "материал 4", "материал 5");
+            FilterMaterialListBox.ItemsSource = _materialOptions;
+            InitializeFilterMaterial();
         }
 
         private void InitializeFilterType()
@@ -83,6 +98,33 @@ namespace Project_UI
             }
 
             UpdateFilterHeaderText(FilterPrintingFormatListBox, FilterPrintingFormatText, "Формат печати");
+        }
+        private void InitializeFilterPrinitgColor()
+        {
+            foreach (var option in _priningColorOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterPrintingColorListBox, FilterPrintingColorText, "Цвет печати");
+        }
+        private void InitializeFilterPositioning()
+        {
+            foreach (var option in _positioningOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterPositioningListBox, FilterPositioningText, "Тип подачи материала");
+        }
+        private void InitializeFilterMaterial()
+        {
+            foreach (var option in _materialOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterMaterialListBox, FilterMaterialText, "Тип материала");
         }
 
         /// <summary>
@@ -259,6 +301,18 @@ namespace Project_UI
                 {
                     UpdateFilterHeaderText(FilterPrintingFormatListBox, FilterPrintingFormatText, "Формат печати");
                 }
+                else if (_priningColorOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterPrintingColorListBox, FilterPrintingColorText, "Цвет печати");
+                }
+                else if (_positioningOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterPositioningListBox, FilterPositioningText, "Тип подачи материала");
+                }
+                else if (_materialOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterMaterialListBox, FilterMaterialText, "Тип материала");
+                }
             }
         }
 
@@ -281,6 +335,21 @@ namespace Project_UI
         private void FilterPrintingFormatButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleFilterVisibility(FilterPrintingFormatListBox, FilterPrintingFormatButtonIcon);
+        }
+
+        private void FilterPrintingColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterVisibility(FilterPrintingColorListBox, FilterPrintingColorButtonIcon);
+        }
+
+        private void FilterPositioningButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterVisibility(FilterPositioningListBox, FilterPositioningButtonIcon);
+        }
+
+        private void FilterMaterialButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterVisibility(FilterMaterialListBox, FilterMaterialButtonIcon);
         }
     }
 }

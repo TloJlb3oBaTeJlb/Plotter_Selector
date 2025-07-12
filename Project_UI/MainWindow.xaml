@@ -169,6 +169,7 @@
                             Grid.Row="1"
                             ItemContainerStyle="{StaticResource ListBoxItem}"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.CanContentScroll="False"
                             Width="280"
                             Padding="0"
                             Margin="0"
@@ -461,7 +462,165 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                             </StackPanel>
-                            
+
+                            <StackPanel
+                                x:Name="FilterPrintingColor"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterPrintingColorText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Цвет печати: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterPrintingColorButton"
+                                        Grid.Column="1"
+                                        Click="FilterPrintingColorButton_Click"
+                                        ToolTip="Показать производителей"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterPrintingColorButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <ListBox
+                                    x:Name="FilterPrintingColorListBox"
+                                    Style="{StaticResource FilterListBox}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+
+                            <StackPanel
+                                x:Name="FilterPositioning"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterPositioningText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Тип подачи материала: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterPositioningButton"
+                                        Grid.Column="1"
+                                        Click="FilterPositioningButton_Click"
+                                        ToolTip="Показать производителей"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterPositioningButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <ListBox
+                                    x:Name="FilterPositioningListBox"
+                                    Style="{StaticResource FilterListBox}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+
+                            <StackPanel
+                                x:Name="FilterMaterial"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterMaterialText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Тип материала: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterMaterialButton"
+                                        Grid.Column="1"
+                                        Click="FilterMaterialButton_Click"
+                                        ToolTip="Показать производителей"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterMaterialButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <ListBox
+                                    x:Name="FilterMaterialListBox"
+                                    Style="{StaticResource FilterListBox}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
                         </ListBox>
                     </Grid>
                 </Border>
