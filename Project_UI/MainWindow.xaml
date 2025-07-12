@@ -170,8 +170,8 @@
                             ItemContainerStyle="{StaticResource ListBoxItem}"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             Width="280"
-                            Margin="0,0,0,0"
-                            Padding="4,0,0,0"
+                            Padding="0"
+                            Margin="0"
                             HorizontalAlignment="Left">
                             
                             <StackPanel
@@ -250,10 +250,7 @@
 
                                 <ListBox
                                     x:Name="FilterTypeListBox"
-                                    Margin="10,0,0,0"
-                                    SelectionMode="Multiple"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    Visibility="Collapsed">
+                                    Style="{StaticResource FilterListBox}">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
                                             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
@@ -306,10 +303,7 @@
 
                                 <ListBox
                                     x:Name="FilterPrintingTypeListBox"
-                                    Margin="10,0,0,0"
-                                    SelectionMode="Multiple"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    Visibility="Collapsed">
+                                    Style="{StaticResource FilterListBox}">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
                                             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
@@ -400,10 +394,7 @@
 
                                 <ListBox
                                     x:Name="FilterManufacturerListBox"
-                                    Margin="10,0,0,0"
-                                    SelectionMode="Multiple"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    Visibility="Collapsed">
+                                    Style="{StaticResource FilterListBox}">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
                                             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
@@ -417,7 +408,59 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                             </StackPanel>
-                            
+
+                            <StackPanel
+                                x:Name="FilterPrintingFormat"
+                                Style="{StaticResource FilterItem}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        x:Name="FilterPrintingFormatText"
+                                        Grid.Column="0"
+                                        TextTrimming="CharacterEllipsis"
+                                        Text="Формат печати: Любой"
+                                        FontSize="15"
+                                        FontWeight="Medium"/>
+
+                                    <Button
+                                        x:Name="FilterPrintingFormatButton"
+                                        Grid.Column="1"
+                                        Click="FilterPrintingFormatButton_Click"
+                                        ToolTip="Показать производителей"
+                                        Style="{StaticResource FilterButton}">
+                                        <Button.Content>
+                                            <Path
+                                                x:Name="FilterPrintingFormatButtonIcon"
+                                                Data="{StaticResource AngleDown}"
+                                                Fill="Gray"
+                                                Height="13"
+                                                Width="13"
+                                                Stretch="Uniform"/>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+
+                                <ListBox
+                                    x:Name="FilterPrintingFormatListBox"
+                                    Style="{StaticResource FilterListBox}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FilterListBoxItem}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
                             
                         </ListBox>
                     </Grid>

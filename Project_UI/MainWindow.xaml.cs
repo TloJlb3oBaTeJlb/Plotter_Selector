@@ -25,6 +25,7 @@ namespace Project_UI
         private ObservableCollection<FilterOption> _typeOptions;
         private ObservableCollection<FilterOption> _printingTypeOptions;
         private ObservableCollection<FilterOption> _manufacturerOptions;
+        private ObservableCollection<FilterOption> _printingFormatOptions;
 
         public MainWindow()
         {
@@ -38,9 +39,13 @@ namespace Project_UI
             FilterPrintingTypeListBox.ItemsSource = _printingTypeOptions;
             InitializeFilterPrintingType();
 
-            _manufacturerOptions = CreateFilterOptions("Производитель 1","Производитель 2","Производитель 3","Производитель 4");
+            _manufacturerOptions = CreateFilterOptions("Производитель 1","Производитель 2","Производитель 3","Производитель 4");//расхардкодить
             FilterManufacturerListBox.ItemsSource = _manufacturerOptions;
             InitializeFilterManufacturer();
+
+            _printingFormatOptions = CreateFilterOptions("Формат 1", "Формат 2", "Формат 3", "Формат 4","1","5","2","6","7","8","9");
+            FilterPrintingFormatListBox.ItemsSource = _printingFormatOptions;
+            InitializerFilterPrintingFormat();
         }
 
         private void InitializeFilterType()
@@ -63,13 +68,21 @@ namespace Project_UI
         }
         private void InitializeFilterManufacturer()
         {
-            
             foreach(var option in _manufacturerOptions)
             {
                 option.PropertyChanged += FilterOption_IsSelectedChanged;
             }
             
             UpdateFilterHeaderText(FilterManufacturerListBox, FilterManufacturerText, "Производитель");
+        }
+        private void InitializerFilterPrintingFormat()
+        {
+            foreach(var option in _printingFormatOptions)
+            {
+                option.PropertyChanged += FilterOption_IsSelectedChanged;
+            }
+
+            UpdateFilterHeaderText(FilterPrintingFormatListBox, FilterPrintingFormatText, "Формат печати");
         }
 
         /// <summary>
@@ -242,6 +255,10 @@ namespace Project_UI
                 {
                     UpdateFilterHeaderText(FilterManufacturerListBox, FilterManufacturerText, "Производитель");
                 }
+                else if (_printingFormatOptions.Contains(changedOption))
+                {
+                    UpdateFilterHeaderText(FilterPrintingFormatListBox, FilterPrintingFormatText, "Формат печати");
+                }
             }
         }
 
@@ -259,6 +276,11 @@ namespace Project_UI
         private void FilterManufacturerButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleFilterVisibility(FilterManufacturerListBox, FilterManufacturerButtonIcon);
+        }
+
+        private void FilterPrintingFormatButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFilterVisibility(FilterPrintingFormatListBox, FilterPrintingFormatButtonIcon);
         }
     }
 }

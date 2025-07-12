@@ -89,9 +89,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="FilterItem" TargetType="StackPanel">
-        <Setter Property="Width" Value="270"/>
+        <Setter Property="Width" Value="255"/>
         <Setter Property="Margin" Value="0,2"/>
         <Setter Property="Orientation" Value="Vertical"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -100,6 +100,14 @@
     <Style x:Key="FilterButton" TargetType="Button">
         <Setter Property="Height" Value="20"/>
         <Setter Property="Width" Value="20"/>
+    </Style>
+
+    <Style x:Key="FilterListBox" TargetType="ListBox">
+        <Setter Property="Margin" Value="10,0,0,0"/>
+        <Setter Property="SelectionMode" Value="Multiple"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
     </Style>
 
     <Style x:Key="FilterListBoxItem" TargetType="ListBoxItem">
@@ -129,14 +137,14 @@
     <Style x:Key="FilterNumericText" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="Padding" Value="0,5,0,0"/>
-        <Setter Property="Margin" Value="12,0,0,3"/>
+        <Setter Property="Margin" Value="9,0,0,3"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="LightGray"/>
     </Style>
 
     <Style x:Key="FilterNumericTextBox" TargetType="TextBox">
-        <Setter Property="Width" Value="100"/>
+        <Setter Property="Width" Value="90"/>
         <Setter Property="Height" Value="18"/>
         <Setter Property="Margin" Value="0,0,3,0"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
