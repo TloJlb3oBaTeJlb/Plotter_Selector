@@ -14,8 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using PlotterDbLib;
-
 namespace Project_UI
 {
     /// <summary>
