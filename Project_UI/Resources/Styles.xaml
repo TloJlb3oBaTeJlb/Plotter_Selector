@@ -154,6 +154,24 @@
         
     </Style>
 
+    <DataTemplate x:Key="PlotterItem">
+        <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" Margin="5"
+            Width="200" Height="250">
+            <StackPanel>
+                <Image Source="{Binding ImageUrl}" Width="180" Height="150" Margin="5"/>
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5,0,5,0" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Price, StringFormat='Цена: {0:C}'}" Margin="5,0,5,5" HorizontalAlignment="Right"/>
+                <Button Content="В корзину" Margin="5" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <ItemsPanelTemplate x:Key="ContentPanel">
+        <WrapPanel IsItemsHost="True"
+               Orientation="Horizontal"
+               HorizontalAlignment="Center"/>
+    </ItemsPanelTemplate>
+
     <Style x:Key="BottomPanel" TargetType="Border" BasedOn="{StaticResource TopPannel}">
         <Setter Property="BorderThickness" Value="0,1,0,0"/>
     </Style>
