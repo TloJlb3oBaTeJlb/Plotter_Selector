@@ -1,26 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite.Query.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Web;
+
 
 
 namespace PlotterDbLib
 {
     public class PlotterDbServer
     {
-        public PlotterDbServer()
+        public PlotterDbServer(bool forceRecreation = false)
         {
-            var dbContext = new PlotterDbContext(DbPath);
+            using var dbContext = new PlotterDbContext(DbPath);
 
-            //dbContext.Database.EnsureDeleted();
+            if (forceRecreation) dbContext.Database.EnsureDeleted();
+
             if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
             else
             {
@@ -47,102 +40,148 @@ namespace PlotterDbLib
                 }
             }
 
-                listener = new();
+            listener = new();
             listener.Prefixes.Add(Url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
         }
 
 
-        //public bool ContinueToRun { set; get; } = true;
         public string DbPath { init; get; } = "plotters.db";
         public string Url { init; get; } = "http://localhost:1111/";
-        public bool IsRunning { get; private set; } = false;
+        public bool IsRunning { get => listener.IsListening; }
 
 
-        public async Task RunAsync()
+        public async Task StartAsync()
         {
             listener.Start();
             Console.WriteLine("Server started with url - " + Url);
-            IsRunning = true;
 
             while (true)
             {
-                var context = await listener.GetContextAsync();
-                Console.WriteLine("Request recieved");
-
-                var response = context.Response;
                 try
                 {
-                    // stream
-                    /*var req = context.Request;
-                    byte[] buffer = new byte[req.ContentLength64];
-                    context.Request.InputStream.Read(buffer, 0, 
-                    (int)req.ContentLength64);
-                    buffer.ToString();//*/
+                    while (true)
+                    {
+                        var context = await listener.GetContextAsync();
+                        var request = context.Request;
+                        Console.WriteLine($"Request: {request.HttpMethod} {request.Url}");
 
-                    Filter filter = GetFilter(context.Request.Url);
-                    // forming filtered result
-                    string serialisedList = 
-                        JsonSerializer.Serialize(GetFiltered(filter), options);
-                    await SendResponse(response, serialisedList);
+                        HandleRequestAsync(context);
+                    }
                 }
-                catch (ArgumentNullException exception)
+                catch (HttpListenerException)
                 {
-                    Console.WriteLine(exception.Message);
-                    await SendResponse(response, "BadRequst", 400);
+                    listener.Close();
+                    Console.WriteLine("Server stopped");
                 }
-                catch (JsonException exception)
-                {
-                    Console.WriteLine(exception.Message);
-                    await SendResponse(response, "BadRequst", 400);
-                }
-
-                Console.WriteLine("Request handled");
             }
-
-            // TODO make server stoppable
-            /*listener.Stop();
-            listener.Close();
-
-            Console.WriteLine("Server stopped");*/
 
         }
 
 
-        private async Task SendResponse(HttpListenerResponse response, 
-            string content, int statusCode = 200)
+        public void Stop() => listener.Stop();
+
+
+        private async void HandleRequestAsync(HttpListenerContext context)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(content);
+            
+            try
+            {
+                switch (context.Request.HttpMethod)
+                {
+                    case "GET":
+                        await HandleGetAsync(context);
+                        break;
+                    case "POST":
+                        await HandlePostAsync(context);
+                        break;
+                    case "PUT":
+                        await HandlePutAsync(context);
+                        break;
+                    case "DELETE":
+                        await HandleDeleteAsync(context);
+                        break;
+                    default:
+                        context.Response.StatusCode = 405;
+                        break;
+                }
+            }
+            catch (JsonException exception)
+            {
+                Console.WriteLine(exception.Message);
+                context.Response.StatusCode = 400;
+            }
+            catch (DbUpdateException exception)
+            {
+                Console.WriteLine(exception.Message);
+                context.Response.StatusCode = 400;
+            }
+            context.Response.Close();
+
+            Console.WriteLine("Request handled");
+        }
+
+
+        private async Task HandleGetAsync(HttpListenerContext context)
+        {
+            var filter = GetObjectFromContent<Filter>(context.Request);
+            await AddJsonContentAsync(context.Response, GetFiltered(filter));
+        }
+
+
+        // I dont like that next 3 methods are pretty much duplicates, but I dont
+        // know how to compbine them
+        private async Task HandlePostAsync(HttpListenerContext context)
+        {
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Add(plotter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private async Task HandlePutAsync(HttpListenerContext context)
+        {
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Update(plotter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private async Task HandleDeleteAsync(HttpListenerContext context)
+        {
+            var plotter = GetObjectFromContent<Plotter>(context.Request);
+
+            using PlotterDbContext db = new(DbPath);
+            db.Remove(plotter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private T GetObjectFromContent<T>(HttpListenerRequest request)
+        {
+            byte[] buffer = new byte[request.ContentLength64];
+            request.InputStream.Read(buffer, 0, (int)request.ContentLength64);
+            return JsonSerializer.Deserialize<T>(buffer, options) ?? 
+                throw new JsonException("Deserialized null value");
+        }
+
+
+        private async Task AddJsonContentAsync(HttpListenerResponse response, 
+            object content)
+        {
+            byte[] buffer = JsonSerializer.SerializeToUtf8Bytes(content, options);
 
             response.ContentLength64 = buffer.Length;
             response.ContentType = "Application/json";
-            response.StatusCode = statusCode;
 
             using Stream output = response.OutputStream;
             await output.WriteAsync(buffer);
             await output.FlushAsync();
-        }
-
-
-        private Filter GetFilter(Uri? url)
-        {
-            ArgumentNullException.ThrowIfNull(url, nameof(url));
-
-            // query
-            /*Console.WriteLine(url.Query);
-            var query = HttpUtility.ParseQueryString(url.Query);
-            Dictionary<string, string> dict = new();
-            foreach (string key in query.Keys) dict[key] = query[key];//*/
-
-            string serialisedFilter = new(url.LocalPath.Skip(1).ToArray());
-            if (serialisedFilter == string.Empty) return new Filter();
-
-            var obj = JsonSerializer.Deserialize<Filter>(serialisedFilter, options);
-            
-            if (obj == null) return new Filter();
-            return (Filter)obj;
-
         }
 
 
@@ -155,31 +194,6 @@ namespace PlotterDbLib
             foreach (var plotter in db.Plotters) 
                 if (filter.IsSuitable(plotter)) result.Add(plotter);
             return result;
-        }
-
-
-        private class PlotterDbContext : DbContext
-        {
-            public PlotterDbContext(string db_path) : base() => dbPath = db_path;
-
-
-            public DbSet<Plotter> Plotters { get; set; }
-
-
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseSqlite($"Data Source={dbPath}");
-            }
-
-
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
-                modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
-            }
-
-
-            private readonly string dbPath;
         }
 
 
@@ -197,7 +211,7 @@ namespace PlotterDbLib
                 {
                     Model = "hp",
                     Price = 5,
-                    Positioning = Positioning.RollToToll
+                    Positioning = Positioning.Drum
                 },
                 new Plotter
                 {
@@ -208,6 +222,31 @@ namespace PlotterDbLib
             ]);
 
             dbContext.SaveChanges();
+        }
+
+
+        private class PlotterDbContext : DbContext
+        {
+            public PlotterDbContext(string db_path) : base() => dbPath = db_path;
+
+
+            public DbSet<Plotter> Plotters { get; set; }
+
+
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+                optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            }
+
+
+            /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                //modelBuilder.Entity<Plotter>().Property(p => p.ResolutionX);
+                //modelBuilder.Entity<Plotter>().Property(p => p.ResolutionY);
+            }//*/
+
+
+            private readonly string dbPath;
         }
 
 

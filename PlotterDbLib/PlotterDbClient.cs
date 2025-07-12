@@ -20,6 +20,9 @@ namespace PlotterDbLib
         }
 
 
+        /// <summary>
+        /// Url адрес сервера базы данных
+        /// </summary>
         public string ServerUrl { init; get; } = "http://localhost:1111/";
 
 
@@ -28,19 +31,34 @@ namespace PlotterDbLib
         /// </summary>
         /// <param name="filter">Параметры фильтрации</param>
         /// <returns>Коллекция плоттеров, удовлетворяющий фильтрам</returns>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<List<Plotter>> GetFilteredPlottersAsync(Filter filter)
         {
-            List<Plotter> result = [];
+            var response = await SendRequestAsync(HttpMethod.Get, filter);
+            return await GetObjectFromResponse<List<Plotter>>(response);
+        }
 
-            // query
-            /*var ur = new FormUrlEncodedContent(filter.ToDictionary());
-            var tmp = "path?" + await ur.ReadAsStringAsync();//*/
 
-            // change because this is horrible
-            string tmp = JsonSerializer.Serialize(filter, options);
-            var res = await client.GetFromJsonAsync<List<Plotter>>(tmp, options);
+        protected async Task<HttpResponseMessage> SendRequestAsync<T>(
+            HttpMethod method, T param)
+        {
+            ByteArrayContent byteContent = new(
+                JsonSerializer.SerializeToUtf8Bytes(param, options));
+            HttpRequestMessage message = new(method, "")
+            {
+                Content = byteContent
+            };
 
-            if (res != null) result = (List<Plotter>)res;
+            var response = await client.SendAsync(message);
+            return response.EnsureSuccessStatusCode();
+        }
+
+
+        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        {
+            var result = await response.Content.ReadFromJsonAsync<T>(options) ??
+                throw new HttpRequestException("Could not get object from content");
+
             return result;
         }
 
