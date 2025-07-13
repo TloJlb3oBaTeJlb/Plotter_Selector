@@ -87,15 +87,10 @@ namespace Project_UI
     {
         if (parameter is Plotter selectedPlotter)
         {
-            MessageBox.Show($"Выбран плоттер: {selectedPlotter.Model} (ID: {selectedPlotter.PlotterId})");
-            // Здесь может быть ваша логика:
-            // - Открыть новое окно с деталями плоттера
-            // - Выделить плоттер
-            // - Запустить какую-то другую операцию
+            //MessageBox.Show($"Выбран плоттер: {selectedPlotter.Model} (ID: {selectedPlotter.PlotterId})");
             
-            // Пример: открыть новое окно с деталями
-            // PlotterDetailsWindow detailsWindow = new PlotterDetailsWindow(selectedPlotter);
-            // detailsWindow.Show();
+            InfoWindow infoWindow = new InfoWindow(selectedPlotter);
+                infoWindow.ShowDialog();
         }
     }
 

@@ -13,11 +13,6 @@
         AllowsTransparency="True"
         StateChanged="Window_StateChanged">
 
-    <Window.Resources>
-        <BooleanToVisibilityConverter
-            x:Key="boolToVisibilityConverter"/>
-    </Window.Resources>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition

@@ -5,8 +5,163 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_UI"
         mc:Ignorable="d"
-        Title="InfoWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="InfoWindow"
+        Height="420"
+        Width="650"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <local:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
+    </Window.Resources>
+
+    <Border
+        BorderThickness="2"
+        CornerRadius="2"
+        BorderBrush="Black">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border
+                Name="TopPanel"
+                Grid.Row="0"
+                MouseDown="Window_MouseDown"
+                Style="{StaticResource TopPannel}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition
+                        Width="Auto"/>
+                        <ColumnDefinition
+                        Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                    Grid.Row="0"
+                    Text="PlotterPRO"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="LightGray"
+                    Margin="5,0"/>
+
+                    <StackPanel
+                    Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+                        <Button
+                        x:Name="CloseButton" 
+                       Click="CloseButton_Click"
+                        ToolTip="Закрыть"
+                        Style="{StaticResource CloseButton}">
+                            <Button.Content>
+                                <Path
+                                Data="{StaticResource Exitbutton}"
+                                Width="10"
+                                Height="10"
+                                Fill="White"
+                                Stretch="Uniform"/>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border
+                x:Name="MainCintent"
+                Padding="10"
+                Grid.Row="1">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" 
+                        BorderBrush="LightGray" 
+                        BorderThickness="1" 
+                        CornerRadius="5" 
+                        Margin="0,0,20,0" 
+                        Background="White">
+                        <Image Source="{Binding PathToImage}" 
+                           Stretch="Uniform" 
+                           Margin="10"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Модель:</Run> <Run Text="{Binding Model}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Производитель:</Run> <Run Text="{Binding Manufacturer}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Цена:</Run> <Run Text="{Binding Price, StringFormat='{}{0:C}'}" Language="ru-RU"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Ширина печати:</Run> <Run Text="{Binding Width, StringFormat='{}{0} см'}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Вес:</Run> <Run Text="{Binding Weight, StringFormat='{}{0} кг'}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Наличие HDD:</Run> <Run Text="{Binding HasHardDrive, Converter={StaticResource BooleanToYesNoConverter}}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Класс:</Run> <Run Text="{Binding PlotterType}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Способ нанесения:</Run> <Run Text="{Binding DrawingMethod}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Тип подачи:</Run> <Run Text="{Binding Positioning}"/>
+                        </TextBlock>
+                        
+                        <TextBlock Margin="0,2">
+                            <Run FontWeight="Bold">Тип печати:</Run> <Run Text="{Binding PrintingType}"/>
+                        </TextBlock>
+
+                        <TextBlock Margin="0,3,0,0">
+                            <Run FontWeight="Bold">Формат печати:</Run>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Format}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+
+                        <TextBlock Margin="0,5,0,0">
+                            <Run FontWeight="Bold">Тип материала (Назначение):</Run>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Material}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+
+                        <TextBlock Margin="0,5,0,0">
+                            <Run FontWeight="Bold">Габариты:</Run>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Dimensions}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+
+                        <TextBlock Margin="0,5,0,0">
+                            <Run FontWeight="Bold">Дополнительная информация:</Run>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Addendum}" 
+                           TextWrapping="Wrap" 
+                           VerticalAlignment="Top" 
+                           Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+
 </Window>
