@@ -104,6 +104,7 @@
         /// </summary>
         public string PathToImage { set; get; } = string.Empty;
 
+        
         internal string[] StringProps
         {
             get => [Model, Manufacturer, Format, Material];
@@ -112,6 +113,7 @@
         {
             get => [PlotterType, DrawingMethod, Positioning, PrintingType];
         }
+
 
         /// <summary>
         /// Метод для вывода объекта в консоль. Нужен для отладки.
@@ -129,6 +131,7 @@ Weight: {Weight},
             foreach (var property in StringProps)
                 str += $"{property.GetType().Name}: {property},\n";
             str += $"HasHardDrive: {HasHardDrive},\n";
+            str += $"Dimensions: {Dimensions},\n";
             str += $"Addendum: {Addendum}";
 
             return str;
@@ -236,10 +239,10 @@ Weight: {Weight},
 
         private bool AreEnumsMatching(Plotter plotter)
         {
-            foreach(var pair in EnumProps.Zip(plotter.EnumProps))
+            foreach(var (Filter, PlotterProp) in EnumProps.Zip(plotter.EnumProps))
             {
-                if (Convert.ToBoolean(pair.First) &&
-                    !pair.First.HasFlag(pair.Second)) return false;
+                if (Convert.ToBoolean(Filter) &&
+                    !Filter.HasFlag(PlotterProp)) return false;
             }
             return true;
         }
@@ -247,10 +250,8 @@ Weight: {Weight},
 
         private bool DoesFitStringFilters(Plotter plotter)
         {
-            foreach (var pair in StringProps.Zip(plotter.StringProps))
-            {
-                if (!pair.Second.Contains(pair.First)) return false;
-            }
+            foreach (var (Filter, PlotterProp) in StringProps.Zip(plotter.StringProps))
+                if (!PlotterProp.Contains(Filter)) return false;
             return true;
         }
 

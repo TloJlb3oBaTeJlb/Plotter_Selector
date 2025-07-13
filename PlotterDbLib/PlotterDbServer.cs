@@ -31,7 +31,7 @@ namespace PlotterDbLib
                     dbContext.Database.EnsureDeleted();
                     dbContext.Database.EnsureCreated();
 
-                    SetUpDataBase(dbContext);
+                    //SetUpDataBase(dbContext);
                 }
                 finally
                 {
@@ -47,7 +47,7 @@ namespace PlotterDbLib
         }
 
 
-        public string DbPath { init; get; } = "plotters.db";
+        public string DbPath { init; get; } = "./plotters.db";
         public string Url { init; get; } = "http://localhost:1111/";
         public bool IsRunning { get => listener.IsListening; }
 
@@ -65,7 +65,8 @@ namespace PlotterDbLib
                     {
                         var context = await listener.GetContextAsync();
                         var request = context.Request;
-                        Console.WriteLine($"Request: {request.HttpMethod} {request.Url}");
+                        Console.WriteLine(
+                            $"Received request: {request.HttpMethod} {request.Url}");
 
                         HandleRequestAsync(context);
                     }

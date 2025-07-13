@@ -35,7 +35,7 @@ namespace PlotterDbLib
         public async Task<List<Plotter>> GetFilteredPlottersAsync(Filter filter)
         {
             var response = await SendRequestAsync(HttpMethod.Get, filter);
-            return await GetObjectFromResponse<List<Plotter>>(response);
+            return await GetObjectFromResponseAsync<List<Plotter>>(response);
         }
 
 
@@ -54,7 +54,7 @@ namespace PlotterDbLib
         }
 
 
-        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        protected async Task<T> GetObjectFromResponseAsync<T>(HttpResponseMessage response)
         {
             var result = await response.Content.ReadFromJsonAsync<T>(options) ??
                 throw new HttpRequestException("Could not get object from content");
