@@ -549,14 +549,6 @@ namespace Project_UI
             this.Close();
         }
 
-        /// <summary>
-        /// Кнопка поиска
-        /// </summary>
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void UpdateFilterHeaderText(ListBox filterListBox, TextBlock headerTextBlock, string filterCategoryName)
         {
             var allOptions = filterListBox.ItemsSource?.OfType<FilterOption>().ToList();
