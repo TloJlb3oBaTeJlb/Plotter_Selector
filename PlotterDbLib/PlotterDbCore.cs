@@ -325,7 +325,7 @@ Weight: {Weight},
 
         internal bool IsSuitable(Plotter plotter)
         {
-            return DoesFitStringFilters(plotter) &&
+            return DoesModelFit(plotter) &&
                 DoesManufacturerFit(plotter) &&
                 IsInPriceRange(plotter) &&
                 IsInWidthRange(plotter) &&
@@ -373,15 +373,23 @@ Weight: {Weight},
             return true;
         }*/
 
+        private bool DoesModelFit(Plotter plotter)
+        {
+            if (string.IsNullOrWhiteSpace(Model))
+            {
+                return true;
+            }
+            return plotter.Model.Contains(Model, StringComparison.OrdinalIgnoreCase);
+        }
 
-        private bool DoesFitStringFilters(Plotter plotter)
+        /*private bool DoesFitStringFilters(Plotter plotter)
         {
             foreach (var pair in StringProps.Zip(plotter.StringProps))
             {
                 if (!pair.Second.Contains(pair.First)) return false;
             }
             return true;
-        }
+        }*/
 
         private bool DoesManufacturerFit(Plotter plotter)
         {

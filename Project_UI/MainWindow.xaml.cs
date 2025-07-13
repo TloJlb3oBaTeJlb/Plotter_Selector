@@ -155,7 +155,6 @@ namespace Project_UI
             _dbCilent = new();
             _plotters = new ObservableCollection<Plotter>();
 
-            this.DataContext = this;
             LoadAllPlotters();
 
             _typeOptions = CreateFilterOptions(typeof(PlotterType));
@@ -189,6 +188,8 @@ namespace Project_UI
             SelectPlotterCommand = new RelayCommand(OnSelectPlotter);
             ApplyFiltersCommand = new RelayCommand(async _ => await ApplyFiltersAsync()); // Асинхронная команда
             ResetFiltersCommand = new RelayCommand(ResetFilters); // Команда сброса
+
+            this.DataContext = this;
         }
 
         private void OnSelectPlotter(object? parameter)

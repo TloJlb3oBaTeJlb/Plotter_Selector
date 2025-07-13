@@ -107,13 +107,15 @@
                 HorizontalAlignment="Right">
                 <TextBox
                     x:Name="SearchBox"
+                    Text="{Binding ModelSearchText, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="ModelSearchTextBox_TextChanged"
                     Height="25"
                     Width="200"
                     Margin="0,0,5,0"/>
 
                 <Button
                     x:Name="SearchButton"
-                    Click="SearchButton_Click"
+                    Command="{Binding ApplyFiltersCommand}"
                     ToolTip="Поиск"
                     Margin="0,0,20,0"
                     Style="{StaticResource SearchButton}">
@@ -658,9 +660,7 @@
                             ScrollViewer.CanContentScroll="False"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
                     </Grid>
-
                 </Border>
-
             </Grid>
         </Border>
 
