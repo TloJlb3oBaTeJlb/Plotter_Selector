@@ -35,6 +35,10 @@ public class FilterOption : INotifyPropertyChanged
         }
     }
 
+    // НОВОЕ СВОЙСТВО: Для хранения фактического значения Enum
+    // Это позволит нам легко сопоставлять выбранные опции с Enum значениями
+    public object? Value { get; set; }
+
     // Стандартная реализация INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string propertyName)

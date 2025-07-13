@@ -47,6 +47,100 @@ namespace PlotterDbLib
         Thermal = 16,
     }
 
+    [Flags]
+    public enum PaperFormat
+    {
+        // Форматы B-серии (обычно больше, чем A той же цифры)
+        [Description("B0+")]
+        B0Plus = 1 << 0,
+        [Description("B0")]
+        B0 = 1 << 1,
+        [Description("B1+")]
+        B1Plus = 1 << 2,
+        [Description("B1")]
+        B1 = 1 << 3,
+        [Description("B2+")]
+        B2Plus = 1 << 4,
+        [Description("B2")]
+        B2 = 1 << 5,
+        [Description("B3+")]
+        B3Plus = 1 << 6,
+        [Description("B3")]
+        B3 = 1 << 7,
+        [Description("B4+")]
+        B4Plus = 1 << 8,
+        [Description("B4")]
+        B4 = 1 << 9,
+
+        // Форматы RA/SRA (увеличенные форматы для печати с обрезкой)
+        [Description("RA1")]
+        RA1 = 1 << 10,
+        [Description("SRA2+")]
+        SRA2Plus = 1 << 11,
+        [Description("SRA2")]
+        SRA2 = 1 << 12,
+        [Description("SRA3+")]
+        SRA3Plus = 1 << 13,
+        [Description("SRA3")]
+        SRA3 = 1 << 14,
+
+        // Форматы A-серии (стандартные)
+        [Description("более A0")]
+        MoreThanA0 = 1 << 15,
+        [Description("A0+")]
+        A0Plus = 1 << 16,
+        [Description("A0")]
+        A0 = 1 << 17,
+        [Description("более A1")]
+        MoreThanA1 = 1 << 18,
+        [Description("A1+")]
+        A1Plus = 1 << 19,
+        [Description("A1")]
+        A1 = 1 << 20,
+        [Description("A2+")]
+        A2Plus = 1 << 21,
+        [Description("A2")]
+        A2 = 1 << 22,
+        [Description("A2-")]
+        A2Minus = 1 << 23,
+        [Description("A3+")]
+        A3Plus = 1 << 24,
+        [Description("A3")]
+        A3 = 1 << 25,
+        [Description("A4+")]
+        A4Plus = 1 << 26,
+        [Description("A4")]
+        A4 = 1 << 27,
+        [Description("A5")]
+        A5 = 1 << 28,
+
+        // Комбинированные флаги
+        // AllA4Formats = A4 | A4Plus,
+        // AllAFormats = A0 | A0Plus | A1 | A1Plus | A2 | A2Plus | A2Minus | A3 | A3Plus | A4 | A4Plus | A5 | MoreThanA0 | MoreThanA1,
+        // AllBFormats = B0Plus | B0 | B1Plus | B1 | B2Plus | B2 | B3Plus | B3 | B4Plus | B4
+    }
+
+    [Flags]
+    public enum Material
+    {
+        [Description("Бумага")]
+        Paper = 1,
+        [Description("Пленка")]
+        Film = 2,
+        [Description("Картон")]
+        Cardboard = 4,
+        [Description("Текстиль")]
+        Textile = 8,
+        [Description("Металл")]
+        Metal = 16,
+        [Description("Стекло")]
+        Glass = 32,
+        [Description("Кожа")]
+        Lether = 64,
+        [Description("Керамика")]
+        Ceramics = 128,
+    }
+
     /// <summary>
     /// Обладает свойствами, отражающими атрибуты сущности Plotter в даталогической модели.
     /// </summary>
@@ -62,14 +156,6 @@ namespace PlotterDbLib
         /// Производитель
         /// </summary>
         public string Manufacturer { set; get; } = string.Empty;//= null!;
-        /// <summary>
-        /// Формат печати
-        /// </summary>
-        public string Format { set; get; } = string.Empty; // maybe
-        /// <summary>
-        /// Тип материала (Назначение)
-        /// </summary>
-        public string Material { set; get; } = string.Empty; // maybe
         /// <summary>
         /// Габариты
         /// </summary>
@@ -112,6 +198,14 @@ namespace PlotterDbLib
         /// Тип печати
         /// </summary>
         public PrintingType PrintingType { set; get; }
+        /// <summary>
+        /// Формат печати
+        /// </summary>
+        public PaperFormat PaperFormat { set; get; }
+        /// <summary>
+        /// Тип материала (Назначение)
+        /// </summary>
+        public Material Material { set; get; }
 
         /// <summary>
         /// Путь к изображению
@@ -120,11 +214,11 @@ namespace PlotterDbLib
 
         internal string[] StringProps
         {
-            get => [Model, Manufacturer, Format, Material];
+            get => [Model, Manufacturer];
         }
         internal Enum[] EnumProps
         {
-            get => [PlotterType, DrawingMethod, Positioning, PrintingType];
+            get => [PlotterType, DrawingMethod, Positioning, PrintingType, PaperFormat, Material];
         }
 
         /// <summary>
@@ -166,17 +260,9 @@ Weight: {Weight},
         /// </summary>
         public string Model { set; get; } = string.Empty;
         /// <summary>
-        /// Фильтр по производителю
+        /// Фильтр по производителю. Если список пуст, то фильтр не активен (показывать всех).
         /// </summary>
-        public string Manufacturer { set; get; } = string.Empty;//= null!;
-        /// <summary>
-        /// Фильтр по формату печати
-        /// </summary>
-        public string Format { set; get; } = string.Empty; // maybe
-        /// <summary>
-        /// Фильтр по типу материала
-        /// </summary>
-        public string Material { set; get; } = string.Empty; // maybe
+        public List<string> Manufacturers { set; get; } = new List<string>();
         /// <summary>
         /// Диапазон цен. Кидает исключение если хотя бы одно из чисел меньше 
         /// нуля или максимум меньше минимума.
@@ -227,11 +313,20 @@ Weight: {Weight},
         /// Фильтр по типу печати
         /// </summary>
         public PrintingType PrintingType { set; get; }
+        /// <summary>
+        /// Фильтр по формату печати
+        /// </summary>
+        public PaperFormat PaperFormat { set; get; }
+        /// <summary>
+        /// Фильтр по типу материала
+        /// </summary>
+        public Material Material { set; get; }
 
 
         internal bool IsSuitable(Plotter plotter)
         {
             return DoesFitStringFilters(plotter) &&
+                DoesManufacturerFit(plotter) &&
                 IsInPriceRange(plotter) &&
                 IsInWidthRange(plotter) &&
                 AreEnumsMatching(plotter);
@@ -247,8 +342,28 @@ Weight: {Weight},
             WidthRange == (min: 0, max: 0) ||
             (plotter.Width >= WidthRange.min && plotter.Width <= WidthRange.max);
 
-
         private bool AreEnumsMatching(Plotter plotter)
+        {
+            foreach (var pair in EnumProps.Zip(plotter.EnumProps))
+            {
+                Enum filterValue = pair.First;
+                Enum plotterValue = pair.Second;
+
+                int filterInt = Convert.ToInt32(filterValue);
+                int plotterInt = Convert.ToInt32(plotterValue);
+
+                if (filterInt != 0)
+                {
+                    if ((filterInt & plotterInt) == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /*private bool AreEnumsMatching(Plotter plotter)
         {
             foreach(var pair in EnumProps.Zip(plotter.EnumProps))
             {
@@ -256,7 +371,7 @@ Weight: {Weight},
                     !pair.First.HasFlag(pair.Second)) return false;
             }
             return true;
-        }
+        }*/
 
 
         private bool DoesFitStringFilters(Plotter plotter)
@@ -268,17 +383,25 @@ Weight: {Weight},
             return true;
         }
 
+        private bool DoesManufacturerFit(Plotter plotter)
+        {
+            if (!Manufacturers.Any())
+            {
+                return true;
+            }
+            return Manufacturers.Any(m => plotter.Manufacturer.Equals(m, StringComparison.OrdinalIgnoreCase));
+        }
 
         private (int min, int max) priceRange;
         private (double min, double max) widthRange;
 
         private string[] StringProps 
         {
-            get => [Model, Manufacturer, Format, Material];
+            get => [Model];
         }
         private Enum[] EnumProps
         {
-            get => [PlotterType, DrawingMethod, Positioning, PrintingType];
+            get => [PlotterType, DrawingMethod, Positioning, PrintingType, PaperFormat, Material];
         }
 
     }

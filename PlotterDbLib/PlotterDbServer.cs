@@ -203,8 +203,36 @@ namespace PlotterDbLib
             dbContext.AddRange([
                 new Plotter
                 {
-                    Model = "canon",
-                    Price = 1
+                    Model = "Canon SUPER MEGA MLG FREESTYLE BASSBOOST",
+                    Manufacturer = "Canon",
+                    Price = 5000,
+                    DrawingMethod = DrawingMethod.Laser,
+                    Material = Material.Metal|Material.Lether,
+                    HasHardDrive = true,
+                    PaperFormat = PaperFormat.MoreThanA0|PaperFormat.B1|PaperFormat.B3|PaperFormat.SRA3,
+                    Weight = 100000,
+                    PlotterType = PlotterType.PrinterCutter,
+                    PrintingType = PrintingType.Colorful,
+                    Width = 100,
+                    Positioning = Positioning.Drum,
+                    PathToImage = "/Images/canon.webp",
+                    Addendum = "idididididididdi"
+                },
+                new Plotter
+                {
+                    Model = "HP CHAD SIGMA MGE MASTER",
+                    Manufacturer = "HP",
+                    Price = 999999,
+                    DrawingMethod = DrawingMethod.ElectroStatic,
+                    Material = Material.Metal|Material.Glass,
+                    HasHardDrive = false,
+                    PaperFormat = PaperFormat.A4|PaperFormat.B1|PaperFormat.B3|PaperFormat.A5,
+                    Weight = 9999,
+                    PlotterType = PlotterType.Cutter,
+                    Width = 20,
+                    Positioning = Positioning.Flatbed,
+                    PathToImage = "/Images/hp.webp",
+                    Addendum = "dededededeededededd"
                 }
             ]);
 

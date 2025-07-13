@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project_UI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -6,9 +7,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
-namespace Project_UI
+namespace Project_UI.Models
 {
     public class BooleanToYesNoConverter : IValueConverter
     {
@@ -35,55 +37,51 @@ namespace Project_UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // value не будет null, так как enum не nullable
+            if (value == null)
+            {
+                return string.Empty; // Возвращаем пустую строку для null значения
+            }
+
             Type enumType = value.GetType();
 
-            // Если по какой-то причине передан не enum (хотя мы это учли), возвращаем строковое представление
             if (!enumType.IsEnum)
             {
-                return value.ToString();
+                return value.ToString()!;
             }
 
             // Обработка Flags Enum
             if (enumType.IsDefined(typeof(FlagsAttribute), false))
             {
-                // Получаем все установленные флаги, исключая 'None' (0)
                 var activeFlags = Enum.GetValues(enumType)
-                                      .Cast<Enum>()
-                                      .Where(flag => System.Convert.ToInt32(flag) != 0 && ((Enum)value).HasFlag(flag))
-                                      .ToList();
+                                       .Cast<Enum>()
+                                       .Where(flag => System.Convert.ToInt32(flag) != 0 && ((Enum)value).HasFlag(flag))
+                                       .ToList();
 
-                // Если ни один флаг не установлен (значение равно 0, как у 'None')
                 if (!activeFlags.Any())
                 {
-                    // Ищем элемент 'None' в enum и возвращаем его описание, если есть
                     FieldInfo? noneField = enumType.GetField("None");
                     if (noneField != null)
                     {
                         return GetDescriptionFromEnumField(noneField);
                     }
-                    // Если 'None' нет или у него нет описания, возвращаем пустую строку или сам 0
-                    return System.Convert.ToInt32(value) == 0 ? string.Empty : value.ToString();
+                    return System.Convert.ToInt32(value) == 0 ? string.Empty : value.ToString()!;
                 }
 
-                // Объединяем описания активных флагов через запятую
                 return string.Join(", ", activeFlags.Select(flag =>
                 {
                     FieldInfo? field = flag.GetType().GetField(flag.ToString());
-                    return field != null ? GetDescriptionFromEnumField(field) : flag.ToString();
+                    return field != null ? GetDescriptionFromEnumField(field) : flag.ToString()!;
                 }));
             }
-            // Обработка обычных Enum (не Flags)
             else
             {
                 FieldInfo? field = enumType.GetField(value.ToString() ?? string.Empty);
-                return field != null ? GetDescriptionFromEnumField(field) : value.ToString();
+                return field != null ? GetDescriptionFromEnumField(field) : value.ToString()!;
             }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // Обратное преобразование не требуется для отображения enum в UI
             throw new NotImplementedException("EnumDescriptionConverter.ConvertBack не реализован.");
         }
 
@@ -94,6 +92,50 @@ namespace Project_UI
         {
             DescriptionAttribute? attribute = field.GetCustomAttribute<DescriptionAttribute>();
             return attribute?.Description ?? field.Name; // Возвращаем описание или имя поля, если описания нет
+        }
+    }
+
+    /// <summary>
+    /// Конвертер, который возвращает Visibility.Collapsed, если строка пуста/null/пробелы, иначе Visibility.Visible.
+    /// </summary>
+    public class EmptyStringToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Проверяем, является ли значение строкой
+            if (value is string str)
+            {
+                // Если строка пустая, null или состоит из одних пробелов, скрываем элемент
+                if (string.IsNullOrWhiteSpace(str))
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+            // Если значение не строка, или строка не пуста, показываем элемент
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("EmptyStringToVisibilityConverter.ConvertBack не реализован.");
+        }
+    }
+
+    public class EnumNoneToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Проверяем, является ли значение Enum и равно ли его целое представление 0
+            if (value is Enum enumValue && System.Convert.ToInt32(enumValue) == 0)
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

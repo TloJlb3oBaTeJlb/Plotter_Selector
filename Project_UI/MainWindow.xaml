@@ -110,7 +110,7 @@
                     Height="25"
                     Width="200"
                     Margin="0,0,5,0"/>
-                
+
                 <Button
                     x:Name="SearchButton"
                     Click="SearchButton_Click"
@@ -169,7 +169,7 @@
                             Padding="0"
                             Margin="0"
                             HorizontalAlignment="Left">
-                            
+
                             <StackPanel
                                 x:Name="FilterPrice"
                                 Style="{StaticResource FilterItem}">
@@ -193,7 +193,9 @@
                                     <TextBox
                                         Grid.Column="0"
                                         x:Name="FilterPriceFrom"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
+                                        Style="{StaticResource FilterNumericTextBox}"
+                                        Text="{Binding MinPriceText, UpdateSourceTrigger=LostFocus}"
+                                        KeyDown="Filter_KeyDown"/>
 
                                     <TextBlock
                                         Grid.Column="1"
@@ -203,7 +205,9 @@
                                     <TextBox
                                         Grid.Column="1"
                                         x:Name="FilterPriceTo"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
+                                        Style="{StaticResource FilterNumericTextBox}"
+                                        Text="{Binding MaxPriceText, UpdateSourceTrigger=LostFocus}"
+                                        KeyDown="Filter_KeyDown"/>
                                 </Grid>
                             </StackPanel>
 
@@ -444,7 +448,9 @@
                                     <TextBox
                                         Grid.Column="0"
                                         x:Name="FilterPrintingWidthFrom"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
+                                        Style="{StaticResource FilterNumericTextBox}"
+                                        Text="{Binding MinWidthText, UpdateSourceTrigger=LostFocus}"
+                                        KeyDown="Filter_KeyDown"/>
 
                                     <TextBlock
                                         Grid.Column="1"
@@ -454,7 +460,9 @@
                                     <TextBox
                                         Grid.Column="1"
                                         x:Name="FilterPrintingWidthTo"
-                                        Style="{StaticResource FilterNumericTextBox}"/>
+                                        Style="{StaticResource FilterNumericTextBox}"
+                                        Text="{Binding MaxWidthText, UpdateSourceTrigger=LostFocus}"
+                                        KeyDown="Filter_KeyDown"/>
                                 </Grid>
                             </StackPanel>
 
@@ -652,7 +660,7 @@
                     </Grid>
 
                 </Border>
-                
+
             </Grid>
         </Border>
 

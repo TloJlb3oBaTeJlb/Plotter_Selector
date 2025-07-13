@@ -91,69 +91,86 @@
                     </Border>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                        
-                        <TextBlock Margin="0,2">
+
+                        <TextBlock Margin="0,2"
+                            Visibility="{Binding Model, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Модель:</Run> <Run Text="{Binding Model}"/>
                         </TextBlock>
-                        
-                        <TextBlock Margin="0,2">
+
+                        <TextBlock Margin="0,2"
+                            Visibility="{Binding Manufacturer, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Производитель:</Run> <Run Text="{Binding Manufacturer}"/>
                         </TextBlock>
-                        
+
                         <TextBlock Margin="0,2">
                             <Run FontWeight="Bold">Цена:</Run> <Run Text="{Binding Price, StringFormat='{}{0:C}'}" Language="ru-RU"/>
                         </TextBlock>
-                        
+
                         <TextBlock Margin="0,2">
                             <Run FontWeight="Bold">Ширина печати:</Run> <Run Text="{Binding Width, StringFormat='{}{0} см'}"/>
                         </TextBlock>
-                        
+
                         <TextBlock Margin="0,2">
                             <Run FontWeight="Bold">Вес:</Run> <Run Text="{Binding Weight, StringFormat='{}{0} кг'}"/>
                         </TextBlock>
-                        
+
                         <TextBlock Margin="0,2">
                             <Run FontWeight="Bold">Наличие HDD:</Run> <Run Text="{Binding HasHardDrive, Converter={StaticResource BooleanToYesNoConverter}}"/>
                         </TextBlock>
-                        
-                        <TextBlock Margin="0,2">
+
+                        <TextBlock Margin="0,2"
+                            Visibility="{Binding PlotterType, Converter={StaticResource EnumNoneToVisibilityConverter}}">
                             <Run FontWeight="Bold">Класс:</Run> <Run Text="{Binding PlotterType, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
-                        
-                        <TextBlock Margin="0,2">
+
+                        <TextBlock Margin="0,2"
+                            Visibility="{Binding DrawingMethod, Converter={StaticResource EnumNoneToVisibilityConverter}}">
                             <Run FontWeight="Bold">Способ нанесения:</Run> <Run Text="{Binding DrawingMethod, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
-                        
-                        <TextBlock Margin="0,2">
+
+                        <TextBlock Margin="0,2"
+                            Visibility="{Binding Positioning, Converter={StaticResource EnumNoneToVisibilityConverter}}">
                             <Run FontWeight="Bold">Тип подачи:</Run> <Run Text="{Binding Positioning, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
-                        
-                        <TextBlock Margin="0,2">
-                            <Run FontWeight="Bold">Тип печати:</Run> <Run Text="{Binding PrintingType, Converter={StaticResource EnumDescriptionConverter}}"/>
+
+                        <TextBlock Margin="0,2"
+                             Visibility="{Binding PrintingType, Converter={StaticResource EnumNoneToVisibilityConverter}}">
+                             <Run FontWeight="Bold">Тип печати:</Run> <Run Text="{Binding PrintingType, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
 
-                        <TextBlock Margin="0,3,0,0">
+                        <TextBlock Margin="0,3,0,0"
+                            Visibility="{Binding Format, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Формат печати:</Run>
                         </TextBlock>
-                        <TextBlock Text="{Binding Format}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                        <TextBlock Text="{Binding PaperFormat, Converter={StaticResource EnumDescriptionConverter}}"
+                            TextWrapping="Wrap" Margin="0,2,0,0"
+                            Visibility="{Binding Format, Converter={StaticResource EnumNoneToVisibilityConverter}}"/>
 
-                        <TextBlock Margin="0,5,0,0">
+                        <TextBlock Margin="0,5,0,0"
+                            Visibility="{Binding Material, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Тип материала (Назначение):</Run>
                         </TextBlock>
-                        <TextBlock Text="{Binding Material}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                        <TextBlock Text="{Binding Material, Converter={StaticResource EnumDescriptionConverter}}"
+                           TextWrapping="Wrap" Margin="0,2,0,0"
+                           Visibility="{Binding Material, Converter={StaticResource EnumNoneToVisibilityConverter}}"/>
 
-                        <TextBlock Margin="0,5,0,0">
+                        <TextBlock Margin="0,5,0,0"
+                            Visibility="{Binding Dimensions, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Габариты:</Run>
                         </TextBlock>
-                        <TextBlock Text="{Binding Dimensions}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                        <TextBlock Text="{Binding Dimensions}"
+                            TextWrapping="Wrap" Margin="0,2,0,0"
+                            Visibility="{Binding Dimensions, Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
 
-                        <TextBlock Margin="0,5,0,0">
+                        <TextBlock Margin="0,5,0,0"
+                            Visibility="{Binding Addendum, Converter={StaticResource EmptyStringToVisibilityConverter}}">
                             <Run FontWeight="Bold">Дополнительная информация:</Run>
                         </TextBlock>
                         <TextBlock Text="{Binding Addendum}" 
                            TextWrapping="Wrap" 
                            VerticalAlignment="Top" 
-                           Margin="0,2,0,0"/>
+                           Margin="0,2,0,0"
+                           Visibility="{Binding Addendum, Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
                     </StackPanel>
                 </Grid>
             </Border>
