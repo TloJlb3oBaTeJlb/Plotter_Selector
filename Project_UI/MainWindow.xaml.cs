@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using PlotterDbLib;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.WebRequestMethods;
 
 namespace Project_UI
 {
@@ -29,10 +33,21 @@ namespace Project_UI
         private ObservableCollection<FilterOption> _priningColorOptions;
         private ObservableCollection<FilterOption> _positioningOptions;
         private ObservableCollection<FilterOption> _materialOptions;
+        public ObservableCollection<PlotterDbLib.Plotter> Plotters { get; set; }
+        public ICommand SelectPlotterCommand { get; private set; }
+        private PlotterDbAdminClient _dbAdmin;
+        private PlotterDbClient _dbCilent;
+        private PlotterDbServer _server;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _server = new();
+            var task = _server.StartAsync();
+
+            _dbAdmin = new();
+            _dbCilent = new();
 
             _typeOptions = CreateFilterOptions("печатающий", "режущий", "гибридный");
             FilterTypeListBox.ItemsSource = _typeOptions;
@@ -54,13 +69,65 @@ namespace Project_UI
             FilterPrintingColorListBox.ItemsSource = _priningColorOptions;
             InitializeFilterPrinitgColor();
 
-            _positioningOptions = CreateFilterOptions("рулонный", "барабанный", "планшетный");
+            _positioningOptions = CreateFilterOptions("рулонный (барабанный)", "планшетный");
             FilterPositioningListBox.ItemsSource = _positioningOptions;
             InitializeFilterPositioning();
 
             _materialOptions = CreateFilterOptions("материал 1", "материал 2", "материал 3", "материал 4", "материал 5");
             FilterMaterialListBox.ItemsSource = _materialOptions;
             InitializeFilterMaterial();
+
+            Plotters = new ();
+            SelectPlotterCommand = new RelayCommand(OnSelectPlotter);
+            this.DataContext = this;
+            LoadAllPlotters();
+        }
+
+        private void OnSelectPlotter(object? parameter)
+    {
+        if (parameter is Plotter selectedPlotter)
+        {
+            MessageBox.Show($"Выбран плоттер: {selectedPlotter.Model} (ID: {selectedPlotter.PlotterId})");
+            // Здесь может быть ваша логика:
+            // - Открыть новое окно с деталями плоттера
+            // - Выделить плоттер
+            // - Запустить какую-то другую операцию
+            
+            // Пример: открыть новое окно с деталями
+            // PlotterDetailsWindow detailsWindow = new PlotterDetailsWindow(selectedPlotter);
+            // detailsWindow.Show();
+        }
+    }
+
+        private async void LoadAllPlotters()
+        {
+            try
+            {
+                var filter = new Filter();
+
+                List<Plotter> fetchedPlotters = await _dbCilent.GetFilteredPlottersAsync(filter);
+
+                if (fetchedPlotters != null && fetchedPlotters.Count > 0)
+                {
+                    Plotters.Clear();
+                    foreach (var plotter in fetchedPlotters)
+                    {
+                        Plotters.Add(plotter);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Список плоттеров пуст ;(");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show($"Ошибка запроса к серверу: {ex.Message}\nПроверьте, запущен ли сервер на localhost:1111.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла непредвиденная ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void InitializeFilterType()
@@ -204,6 +271,7 @@ namespace Project_UI
         /// </summary>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            _server.Stop();
             this.Close();
         }
 

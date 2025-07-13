@@ -16,6 +16,8 @@ namespace TestServer
             var plotters = await client.GetFilteredPlottersAsync(new() { Model = "a"});
             plotters.ForEach(Console.WriteLine);
 
+            await task;
+
             //Console.WriteLine(await client.AddPlotterAsync(plotters.First()));
 
             //change test

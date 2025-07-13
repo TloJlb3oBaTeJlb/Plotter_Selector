@@ -10,4 +10,26 @@
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Images\canon.webp" />
+    <None Remove="Images\hp.webp" />
+    <None Remove="Images\yotta.webp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PlotterDbLib\PlotterDbLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\canon.webp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\hp.webp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\yotta.webp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
 </Project>

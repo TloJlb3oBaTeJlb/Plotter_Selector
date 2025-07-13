@@ -648,10 +648,12 @@
                             x:Name="ProductListBox"
                             Grid.Row="1"
                             BorderThickness="0"
+                            ItemContainerStyle="{StaticResource PlotterItemStyle}"
+                            ItemsSource="{Binding Plotters}"
                             ItemTemplate="{StaticResource PlotterItem}"
                             ItemsPanel="{StaticResource ContentPanel}"
                             ScrollViewer.CanContentScroll="False"
-                            Background="Transparent"/>
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
                     </Grid>
 
                 </Border>
