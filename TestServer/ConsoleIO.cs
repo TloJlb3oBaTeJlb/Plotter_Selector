@@ -55,7 +55,7 @@ namespace TestServer
             double output;
             while (true)
             {
-                output = GetInt(msg);
+                output = GetDouble(msg);
                 if (output <= max && output >= min) break;
                 Console.Write(outOfRange);
             }
@@ -66,7 +66,7 @@ namespace TestServer
 
         internal static bool GetBool(string msg)
         {
-            Console.WriteLine(msg);
+            Console.Write(msg);
             bool output;
             while (!bool.TryParse(Console.ReadLine(), out output))
             {
@@ -101,28 +101,6 @@ namespace TestServer
             return output;
         }
 
-
-        /*internal static List<double> GetList(string msg)
-        {
-            List<double> output = [];
-
-            Console.Write(msg);
-            while (true)
-            {
-                try
-                {
-                    output = Algorithm.ConvertStringToData(Console.ReadLine());
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine(incorrectInput);
-                    continue;
-                }
-                break;
-            }
-
-            return output;
-        }//*/
 
         internal static void ShowOptions<T>(List<T> options)
         {

@@ -12,9 +12,9 @@ namespace PlotterDbLib
     /// </summary>
     public class PlotterDbClient
     {
-        public PlotterDbClient()
+        public PlotterDbClient(string serverUrl = "http://localhost:1111/")
         {
-            client = new HttpClient { BaseAddress = new Uri(ServerUrl) };
+            client = new HttpClient { BaseAddress = new Uri(serverUrl) };
 
             options = new() { IncludeFields = true };
         }
@@ -23,7 +23,7 @@ namespace PlotterDbLib
         /// <summary>
         /// Url адрес сервера базы данных
         /// </summary>
-        public string ServerUrl { init; get; } = "http://localhost:1111/";
+        //public string ServerUrl { init; get; } = "http://localhost:1111/";
 
 
         /// <summary>

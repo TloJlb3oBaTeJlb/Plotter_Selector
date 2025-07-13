@@ -8,16 +8,19 @@ namespace PlotterDbLib
 {
     public class PlotterDbServer
     {
-        public PlotterDbServer(bool forceRecreation = false)
+        public PlotterDbServer(bool forceRecreation = false, 
+            string path = "../../../plotters.db",
+            string url = "http://localhost:1111/")
         {
-            using var dbContext = new PlotterDbContext(DbPath);
+            dbPath = path;
+
+            using var dbContext = new PlotterDbContext(dbPath);
 
             if (forceRecreation) dbContext.Database.EnsureDeleted();
 
-            if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
-            else
+            if (!dbContext.Database.EnsureCreated())
             {
-                var tested = new Plotter() { Model = "Test" };
+                var tested = new Plotter() { Model = "--Test--" };
                 dbContext.Plotters.Add(tested);
                 try
                 {
@@ -30,8 +33,6 @@ namespace PlotterDbLib
 
                     dbContext.Database.EnsureDeleted();
                     dbContext.Database.EnsureCreated();
-
-                    //SetUpDataBase(dbContext);
                 }
                 finally
                 {
@@ -41,21 +42,19 @@ namespace PlotterDbLib
             }
 
             listener = new();
-            listener.Prefixes.Add(Url);
+            listener.Prefixes.Add(url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
         }
 
 
-        public string DbPath { init; get; } = "./plotters.db";
-        public string Url { init; get; } = "http://localhost:1111/";
         public bool IsRunning { get => listener.IsListening; }
 
 
         public async Task StartAsync()
         {
             listener.Start();
-            Console.WriteLine("Server started with url - " + Url);
+            Console.WriteLine("Server started with url - " + listener.Prefixes.First());
 
             while (true)
             {
@@ -137,7 +136,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Add(plotter);
             await db.SaveChangesAsync();
         }
@@ -147,7 +146,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Update(plotter);
             await db.SaveChangesAsync();
         }
@@ -157,7 +156,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Remove(plotter);
             await db.SaveChangesAsync();
         }
@@ -188,41 +187,13 @@ namespace PlotterDbLib
 
         private List<Plotter> GetFiltered(Filter filter)
         {
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
 
             List<Plotter> result = [];
 
             foreach (var plotter in db.Plotters) 
                 if (filter.IsSuitable(plotter)) result.Add(plotter);
             return result;
-        }
-
-
-        private static void SetUpDataBase(PlotterDbContext dbContext)
-        {
-            // Test data
-            dbContext.AddRange([
-                new Plotter
-                {
-                    Model = "canon",
-                    Price = 1,
-                    Positioning = Positioning.Flatbed
-                },
-                new Plotter
-                {
-                    Model = "hp",
-                    Price = 5,
-                    Positioning = Positioning.Drum
-                },
-                new Plotter
-                {
-                    Model = "Yotta Something",
-                    Price = 100,
-                    DrawingMethod = DrawingMethod.Inkjet
-                }
-            ]);
-
-            dbContext.SaveChanges();
         }
 
 
@@ -253,5 +224,6 @@ namespace PlotterDbLib
 
         private readonly HttpListener listener;
         private readonly JsonSerializerOptions options;
+        private readonly string dbPath;
     }
 }

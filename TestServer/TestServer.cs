@@ -10,7 +10,7 @@ namespace TestServer
         static async Task Main(string[] args)
         {
             PlotterDbServer server = new();
-            Console.WriteLine("Server boots...");
+            Console.WriteLine("Server boots up...");
             var task = server.StartAsync();
             while (!server.IsRunning) { }
 
