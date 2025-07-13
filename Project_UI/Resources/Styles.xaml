@@ -175,60 +175,83 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="White"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
     </Style>
 
+    <Style x:Key="PlotterItemInfo" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="10,10,10,0"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        <Setter Property="TextAlignment" Value="Left"/>
+    </Style>
+    
     <DataTemplate x:Key="PlotterItem">
         <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.SelectPlotterCommand}"
             CommandParameter="{Binding}"
             Style="{StaticResource FlatButtonStyle}">
             <Border BorderBrush="LightGray"
+                    Background="White"
                     BorderThickness="1"
                     CornerRadius="5"
                     Margin="4"
                     Width="340"
-                    Height="125">
+                    Height="150">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Border>
-                        <Image Source="{Binding PathToImage}"
-                               Width="120"
-                               Height="120"
-                               Stretch="Uniform"
-                               Margin="5,0,0,0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                    </Border>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="{Binding Model}"
+                               Grid.Row="0"
+                               Background="LightGray"
+                               FontWeight="Bold" FontSize="20"
+                               Padding="10,0,10,0"
+                               TextTrimming="CharacterEllipsis"
+                               TextAlignment="Left"/>
 
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding Model}"
-                                   FontWeight="Bold" FontSize="20"
-                                   Margin="10,0,10,5"
-                                   TextTrimming="CharacterEllipsis"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Left"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Border>
+                            <Image Source="{Binding PathToImage}"
+                                   Width="120"
+                                   Height="120"
+                                   Stretch="Uniform"
+                                   Margin="5,0,0,0"
+                                   VerticalAlignment="Center"/>
+                        </Border>
 
-                        <TextBlock Text="{Binding Manufacturer}" 
-                                   FontSize="12"
-                                   Margin="10,0,10,5"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"
-                                   Foreground="Gray"/>
+                        <StackPanel Grid.Column="1">
 
-                        <TextBlock Text="{Binding Price, StringFormat='Цена: {0:C}'}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Margin="10,5,10,5"
-                                   HorizontalAlignment="Right"/>
-                    </StackPanel>
+                            <TextBlock Text="{Binding Manufacturer, StringFormat='Производитель: {0}'}" 
+                                       Style="{StaticResource PlotterItemInfo}"/>
+
+                            <TextBlock Text="{Binding PlotterType, StringFormat='Тип плоттера: {0}'}" 
+                                       Style="{StaticResource PlotterItemInfo}"/>
+
+                            <TextBlock Text="Нажмите, чтобы узнать больше..."
+                                       TextDecorations="Underline"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       Margin="10,10,10,0"
+                                       HorizontalAlignment="Left"/>
+
+                            <TextBlock Text="{Binding Price, StringFormat='Цена: {0:C}'}" Language="ru-RU"
+                                       FontSize="15" FontWeight="SemiBold"
+                                       Margin="10,17,10,5"
+                                       HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
-
             </Border>
         </Button>
     </DataTemplate>
