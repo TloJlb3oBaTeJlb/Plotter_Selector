@@ -204,20 +204,7 @@ namespace PlotterDbLib
                 new Plotter
                 {
                     Model = "canon",
-                    Price = 1,
-                    Positioning = Positioning.Flatbed
-                },
-                new Plotter
-                {
-                    Model = "hp",
-                    Price = 5,
-                    Positioning = Positioning.Drum
-                },
-                new Plotter
-                {
-                    Model = "Yotta Something",
-                    Price = 100,
-                    DrawingMethod = DrawingMethod.Inkjet
+                    Price = 1
                 }
             ]);
 

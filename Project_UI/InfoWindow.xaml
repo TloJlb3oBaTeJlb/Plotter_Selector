@@ -13,10 +13,6 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     
-    <Window.Resources>
-        <local:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
-    </Window.Resources>
-
     <Border
         BorderThickness="2"
         CornerRadius="2"
@@ -121,19 +117,19 @@
                         </TextBlock>
                         
                         <TextBlock Margin="0,2">
-                            <Run FontWeight="Bold">Класс:</Run> <Run Text="{Binding PlotterType}"/>
+                            <Run FontWeight="Bold">Класс:</Run> <Run Text="{Binding PlotterType, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
                         
                         <TextBlock Margin="0,2">
-                            <Run FontWeight="Bold">Способ нанесения:</Run> <Run Text="{Binding DrawingMethod}"/>
+                            <Run FontWeight="Bold">Способ нанесения:</Run> <Run Text="{Binding DrawingMethod, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
                         
                         <TextBlock Margin="0,2">
-                            <Run FontWeight="Bold">Тип подачи:</Run> <Run Text="{Binding Positioning}"/>
+                            <Run FontWeight="Bold">Тип подачи:</Run> <Run Text="{Binding Positioning, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
                         
                         <TextBlock Margin="0,2">
-                            <Run FontWeight="Bold">Тип печати:</Run> <Run Text="{Binding PrintingType}"/>
+                            <Run FontWeight="Bold">Тип печати:</Run> <Run Text="{Binding PrintingType, Converter={StaticResource EnumDescriptionConverter}}"/>
                         </TextBlock>
 
                         <TextBlock Margin="0,3,0,0">

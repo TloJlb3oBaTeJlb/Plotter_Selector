@@ -5,6 +5,10 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            
+            <local:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
+            <local:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles.xaml"/>

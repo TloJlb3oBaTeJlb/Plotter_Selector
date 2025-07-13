@@ -1,37 +1,51 @@
-﻿namespace PlotterDbLib
+﻿using System.ComponentModel;
+
+namespace PlotterDbLib
 {
     [Flags]
     public enum PlotterType
     {
+        [Description("Печатающий")]
         Printer = 1,
+        [Description("Режущий")]
         Cutter = 2,
+        [Description("Гибридный")]
         PrinterCutter = 4
     }
 
+    [Flags]
     public enum Positioning
     {
+        [Description("Барабанный (Рулонный)")]
         Drum = 1,
-        //RollToToll = 2,
-        Flatbed = 2,
+        // RollToToll = 2, 
+        [Description("Планшетный")]
+        Flatbed = 2
     }
 
     [Flags]
     public enum PrintingType
     {
+        [Description("Монохромная")]
         Monochrome = 1,
+        [Description("Цветная")]
         Colorful = 2,
     }
-    
+
     [Flags]
     public enum DrawingMethod
     {
+        [Description("Перьевой")]
         Pen = 1,
+        [Description("Струйный")]
         Inkjet = 2,
+        [Description("Электростатический")]
         ElectroStatic = 4,
+        [Description("Лазерный")]
         Laser = 8,
+        [Description("Термальный")]
         Thermal = 16,
     }
-
 
     /// <summary>
     /// Обладает свойствами, отражающими атрибуты сущности Plotter в даталогической модели.
