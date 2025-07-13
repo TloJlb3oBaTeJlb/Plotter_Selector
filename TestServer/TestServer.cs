@@ -13,7 +13,7 @@ namespace TestServer
             Console.WriteLine("Server boots up...");
             var task = server.StartAsync();
             while (!server.IsRunning) { }
-
+            
             await RunAdminConsole();
 
             server.Stop();
@@ -102,6 +102,7 @@ namespace TestServer
         static async Task ChangePlotter()
         {
             int id = ConsoleIO.GetInt("Id: ");
+            // this is disgusting, but to make it good is too much work.
             var changedPlotter = GetPlotter();
             changedPlotter.PlotterId = id;
             var res = await client.UpdatePlotterAsync(changedPlotter);

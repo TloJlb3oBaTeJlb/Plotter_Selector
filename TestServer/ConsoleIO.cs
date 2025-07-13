@@ -1,6 +1,8 @@
 ﻿// ConsoleIO.cs
 
 
+using Microsoft.Extensions.Options;
+
 namespace TestServer
 {
     internal static class ConsoleIO
@@ -40,6 +42,7 @@ namespace TestServer
 
         internal static double GetDouble(string msg) 
         {
+            Console.Write(msg);
             double output;
             while(!double.TryParse(Console.ReadLine(), out output)) 
             {
@@ -78,12 +81,20 @@ namespace TestServer
 
         internal static T GetEnum<T>(string msg, bool mustBeDefined = false) where T : struct, Enum
         {
-            Console.Write(msg);
+            Console.WriteLine(msg);
+
+            int i = 0;
+            foreach(var name in Enum.GetNames<T>())
+            {
+                Console.WriteLine("  " + (Math.Pow(2, i)) + " - " + name);
+                i++;
+            }
+
             T output;
             while (!Enum.TryParse(Console.ReadLine(), out output) ||
                 (mustBeDefined && !Enum.IsDefined(typeof(T), output))) 
                 Console.WriteLine(incorrectInput);
-
+            
             return output;
         }
 
