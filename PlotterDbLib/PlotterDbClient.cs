@@ -12,9 +12,9 @@ namespace PlotterDbLib
     /// </summary>
     public class PlotterDbClient
     {
-        public PlotterDbClient()
+        public PlotterDbClient(string serverUrl = "http://localhost:1111/")
         {
-            client = new HttpClient { BaseAddress = new Uri(ServerUrl) };
+            client = new HttpClient { BaseAddress = new Uri(serverUrl) };
 
             options = new() { IncludeFields = true };
         }
@@ -23,7 +23,7 @@ namespace PlotterDbLib
         /// <summary>
         /// Url адрес сервера базы данных
         /// </summary>
-        public string ServerUrl { init; get; } = "http://localhost:1111/";
+        //public string ServerUrl { init; get; } = "http://localhost:1111/";
 
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace PlotterDbLib
         public async Task<List<Plotter>> GetFilteredPlottersAsync(Filter filter)
         {
             var response = await SendRequestAsync(HttpMethod.Get, filter);
-            return await GetObjectFromResponse<List<Plotter>>(response);
+            return await GetObjectFromResponseAsync<List<Plotter>>(response);
         }
 
 
@@ -54,7 +54,7 @@ namespace PlotterDbLib
         }
 
 
-        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        protected async Task<T> GetObjectFromResponseAsync<T>(HttpResponseMessage response)
         {
             var result = await response.Content.ReadFromJsonAsync<T>(options) ??
                 throw new HttpRequestException("Could not get object from content");

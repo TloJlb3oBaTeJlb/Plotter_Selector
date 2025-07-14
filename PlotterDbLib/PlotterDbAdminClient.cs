@@ -5,7 +5,8 @@
     /// </summary>
     public class PlotterDbAdminClient : PlotterDbClient
     {
-        public PlotterDbAdminClient() : base() { }
+        public PlotterDbAdminClient(string serverUrl = "http://localhost:1111/") 
+            : base(serverUrl) { }
 
 
         public async Task<HttpResponseMessage> AddPlotterAsync(Plotter plotter) =>

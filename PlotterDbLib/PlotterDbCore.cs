@@ -212,6 +212,7 @@ namespace PlotterDbLib
         /// </summary>
         public string PathToImage { set; get; } = string.Empty;
 
+        
         internal string[] StringProps
         {
             get => [Model, Manufacturer];
@@ -220,6 +221,7 @@ namespace PlotterDbLib
         {
             get => [PlotterType, DrawingMethod, Positioning, PrintingType, PaperFormat, Material];
         }
+
 
         /// <summary>
         /// Метод для вывода объекта в консоль. Нужен для отладки.
@@ -237,6 +239,7 @@ Weight: {Weight},
             foreach (var property in StringProps)
                 str += $"{property.GetType().Name}: {property},\n";
             str += $"HasHardDrive: {HasHardDrive},\n";
+            str += $"Dimensions: {Dimensions},\n";
             str += $"Addendum: {Addendum}";
 
             return str;
@@ -384,10 +387,8 @@ Weight: {Weight},
 
         /*private bool DoesFitStringFilters(Plotter plotter)
         {
-            foreach (var pair in StringProps.Zip(plotter.StringProps))
-            {
-                if (!pair.Second.Contains(pair.First)) return false;
-            }
+            foreach (var (Filter, PlotterProp) in StringProps.Zip(plotter.StringProps))
+                if (!PlotterProp.Contains(Filter)) return false;
             return true;
         }*/
 

@@ -8,16 +8,19 @@ namespace PlotterDbLib
 {
     public class PlotterDbServer
     {
-        public PlotterDbServer(bool forceRecreation = false)
+        public PlotterDbServer(bool forceRecreation = false, 
+            string path = "../../../plotters.db",
+            string url = "http://localhost:1111/")
         {
-            using var dbContext = new PlotterDbContext(DbPath);
+            dbPath = path;
+
+            using var dbContext = new PlotterDbContext(dbPath);
 
             if (forceRecreation) dbContext.Database.EnsureDeleted();
 
-            if (dbContext.Database.EnsureCreated()) SetUpDataBase(dbContext);
-            else
+            if (!dbContext.Database.EnsureCreated())
             {
-                var tested = new Plotter() { Model = "Test" };
+                var tested = new Plotter() { Model = "--Test--" };
                 dbContext.Plotters.Add(tested);
                 try
                 {
@@ -30,8 +33,6 @@ namespace PlotterDbLib
 
                     dbContext.Database.EnsureDeleted();
                     dbContext.Database.EnsureCreated();
-
-                    SetUpDataBase(dbContext);
                 }
                 finally
                 {
@@ -41,21 +42,19 @@ namespace PlotterDbLib
             }
 
             listener = new();
-            listener.Prefixes.Add(Url);
+            listener.Prefixes.Add(url);
             
             options = new JsonSerializerOptions { IncludeFields = true };
         }
 
 
-        public string DbPath { init; get; } = "../../../plotters.db";
-        public string Url { init; get; } = "http://localhost:1111/";
         public bool IsRunning { get => listener.IsListening; }
 
 
         public async void StartAsync()
         {
             listener.Start();
-            Console.WriteLine("Server started with url - " + Url);
+            Console.WriteLine("Server started with url - " + listener.Prefixes.First());
 
             try
             {
@@ -133,7 +132,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Add(plotter);
             await db.SaveChangesAsync();
         }
@@ -143,7 +142,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Update(plotter);
             await db.SaveChangesAsync();
         }
@@ -153,7 +152,7 @@ namespace PlotterDbLib
         {
             var plotter = GetObjectFromContent<Plotter>(context.Request);
 
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
             db.Remove(plotter);
             await db.SaveChangesAsync();
         }
@@ -184,7 +183,7 @@ namespace PlotterDbLib
 
         private List<Plotter> GetFiltered(Filter filter)
         {
-            using PlotterDbContext db = new(DbPath);
+            using PlotterDbContext db = new(dbPath);
 
             List<Plotter> result = [];
 
@@ -264,5 +263,6 @@ namespace PlotterDbLib
 
         private readonly HttpListener listener;
         private readonly JsonSerializerOptions options;
+        private readonly string dbPath;
     }
 }
