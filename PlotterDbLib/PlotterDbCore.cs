@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace PlotterDbLib
 {
@@ -144,73 +145,292 @@ namespace PlotterDbLib
     /// <summary>
     /// Обладает свойствами, отражающими атрибуты сущности Plotter в даталогической модели.
     /// </summary>
-    public class Plotter
+    public class Plotter : INotifyPropertyChanged
     {
-        public int PlotterId { set; get; }
+        // -----------------------------------------------------
+        // INotifyPropertyChanged Implementation
+        // -----------------------------------------------------
+        public event PropertyChangedEventHandler? PropertyChanged;
 
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        // -----------------------------------------------------
+
+
+        // -----------------------------------------------------
+        // Modify existing properties to use backing fields and OnPropertyChanged()
+        // -----------------------------------------------------
+        private int _plotterId;
+        public int PlotterId
+        {
+            get => _plotterId;
+            set
+            {
+                if (_plotterId != value)
+                {
+                    _plotterId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _model = null!;
         /// <summary>
         /// Модель плоттера
         /// </summary>
-        public string Model { set; get; } = null!;
+        public string Model
+        {
+            get => _model;
+            set
+            {
+                if (_model != value)
+                {
+                    _model = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _manufacturer = string.Empty;
         /// <summary>
         /// Производитель
         /// </summary>
-        public string Manufacturer { set; get; } = string.Empty;//= null!;
+        public string Manufacturer
+        {
+            get => _manufacturer;
+            set
+            {
+                if (_manufacturer != value)
+                {
+                    _manufacturer = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _dimensions = string.Empty;
         /// <summary>
         /// Габариты
         /// </summary>
-        public string Dimensions { set; get; } = string.Empty; // maybe
+        public string Dimensions
+        {
+            get => _dimensions;
+            set
+            {
+                if (_dimensions != value)
+                {
+                    _dimensions = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _addendum = string.Empty;
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public string Addendum { set; get; } = string.Empty;
+        public string Addendum
+        {
+            get => _addendum;
+            set
+            {
+                if (_addendum != value)
+                {
+                    _addendum = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private int _price;
         /// <summary>
         /// Цена
         /// </summary>
-        public int Price { set; get; }
+        public int Price
+        {
+            get => _price;
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _width;
         /// <summary>
         /// Ширина печати
         /// </summary>
-        public double Width { set; get; }
+        public double Width
+        {
+            get => _width;
+            set
+            {
+                if (_width != value)
+                {
+                    _width = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _weight;
         /// <summary>
         /// Вес
         /// </summary>
-        public double Weight { set; get; }
+        public double Weight
+        {
+            get => _weight;
+            set
+            {
+                if (_weight != value)
+                {
+                    _weight = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _hasHardDrive;
         /// <summary>
         /// Наличие жёсткого диска
         /// </summary>
-        public bool HasHardDrive { set; get; }
+        public bool HasHardDrive
+        {
+            get => _hasHardDrive;
+            set
+            {
+                if (_hasHardDrive != value)
+                {
+                    _hasHardDrive = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private PlotterType _plotterType;
         /// <summary>
         /// Класс
         /// </summary>
-        public PlotterType PlotterType { set; get; }
+        public PlotterType PlotterType
+        {
+            get => _plotterType;
+            set
+            {
+                if (_plotterType != value)
+                {
+                    _plotterType = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private DrawingMethod _drawingMethod;
         /// <summary>
         /// Способ нанесения изображения
         /// </summary>
-        public DrawingMethod DrawingMethod { set; get; }
+        public DrawingMethod DrawingMethod
+        {
+            get => _drawingMethod;
+            set
+            {
+                if (_drawingMethod != value)
+                {
+                    _drawingMethod = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Positioning _positioning;
         /// <summary>
         /// Тип подачи материала
         /// </summary>
-        public Positioning Positioning { set; get; }
+        public Positioning Positioning
+        {
+            get => _positioning;
+            set
+            {
+                if (_positioning != value)
+                {
+                    _positioning = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private PrintingType _printingType;
         /// <summary>
         /// Тип печати
         /// </summary>
-        public PrintingType PrintingType { set; get; }
+        public PrintingType PrintingType
+        {
+            get => _printingType;
+            set
+            {
+                if (_printingType != value)
+                {
+                    _printingType = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private PaperFormat _paperFormat;
         /// <summary>
         /// Формат печати
         /// </summary>
-        public PaperFormat PaperFormat { set; get; }
+        public PaperFormat PaperFormat
+        {
+            get => _paperFormat;
+            set
+            {
+                if (_paperFormat != value)
+                {
+                    _paperFormat = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Material _material;
         /// <summary>
         /// Тип материала (Назначение)
         /// </summary>
-        public Material Material { set; get; }
+        public Material Material
+        {
+            get => _material;
+            set
+            {
+                if (_material != value)
+                {
+                    _material = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private string _pathToImage = string.Empty;
         /// <summary>
         /// Путь к изображению
         /// </summary>
-        public string PathToImage { set; get; } = string.Empty;
+        public string PathToImage
+        {
+            get => _pathToImage;
+            set
+            {
+                if (_pathToImage != value)
+                {
+                    _pathToImage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        // -----------------------------------------------------
 
         internal string[] StringProps
         {

@@ -94,10 +94,10 @@ namespace Project_UI
                                                              // Важно: Вызываем ApplyFiltersAsync() здесь,
                                                              // после того как свойство обновилось
                                                              // Task.Run(() => ApplyFiltersAsync()); // Или без Task.Run, если ApplyFiltersAsync достаточно быстрое
-                    ApplyFiltersAsync(); // await здесь не нужен, так как сеттер не может быть async void
-                                         // Если ApplyFiltersAsync действительно асинхронный и долгий,
-                                         // лучше вызывать его через Task.Run, чтобы не блокировать UI.
-                                         // Однако, для фильтрации данных это редко нужно.
+                    Task.Run(() => ApplyFiltersAsync()); // await здесь не нужен, так как сеттер не может быть async void
+                                                         // Если ApplyFiltersAsync действительно асинхронный и долгий,
+                                                         // лучше вызывать его через Task.Run, чтобы не блокировать UI.
+                                                         // Однако, для фильтрации данных это редко нужно.
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace Project_UI
                 {
                     _maxPriceText = value;
                     OnPropertyChanged(nameof(MaxPriceText));
-                    ApplyFiltersAsync();
+                    Task.Run(() => ApplyFiltersAsync());
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace Project_UI
                 {
                     _minWidthText = value;
                     OnPropertyChanged(nameof(MinWidthText));
-                    ApplyFiltersAsync();
+                    Task.Run(() => ApplyFiltersAsync());
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace Project_UI
                 {
                     _maxWidthText = value;
                     OnPropertyChanged(nameof(MaxWidthText));
-                    ApplyFiltersAsync();
+                    Task.Run(() => ApplyFiltersAsync());
                 }
             }
         }
