@@ -10,7 +10,7 @@ namespace TestServer
 
         static async Task Main(string[] args)
         {
-            PlotterDbServer server = new(false, "../../../plotters.db");
+            PlotterDbServer server = new(false, "../../../../plotters.db");
             Console.WriteLine("Server boots up...");
             server.StartAsync();
             while (!server.IsRunning) { }
