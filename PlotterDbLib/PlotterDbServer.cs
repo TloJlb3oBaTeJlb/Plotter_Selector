@@ -9,7 +9,7 @@ namespace PlotterDbLib
     public class PlotterDbServer
     {
         public PlotterDbServer(bool forceRecreation = false, 
-            string path = "../../../plotters.db",
+            string path = "plotters.db",
             string url = "http://localhost:1111/")
         {
             dbPath = path;

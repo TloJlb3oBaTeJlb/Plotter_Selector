@@ -5,11 +5,10 @@ namespace TestServer
 
     internal class TestServer
     {
-        private static PlotterDbAdminClient client = null!;
 
         static void Main(string[] args)
         {
-            PlotterDbServer server = new();
+            PlotterDbServer server = new(false, "../../../plotters.db");
             Console.WriteLine("Server boots up...");
             server.StartAsync();
             while (!server.IsRunning) { }
