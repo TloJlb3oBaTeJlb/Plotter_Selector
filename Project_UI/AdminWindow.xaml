@@ -1,0 +1,211 @@
+﻿<Window x:Class="Project_UI.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project_UI"
+        mc:Ignorable="d"
+        Title="AdminWindow"
+        Height="500"
+        Width="1000"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        StateChanged="Window_StateChanged">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+            Height="Auto"/>
+            <RowDefinition
+            Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition
+            Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border
+        Name="TopPanel"
+        Grid.Row="0"
+        MouseDown="Window_MouseDown"
+        Style="{StaticResource TopPannel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition
+                    Width="Auto"/>
+                    <ColumnDefinition
+                    Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                Grid.Row="0"
+                Text="PlotterPRO"
+                FontSize="15"
+                FontWeight="Bold"
+                Foreground="LightGray"
+                Margin="5,0"/>
+
+                <StackPanel
+                Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                    <Button
+                    x:Name="MinimizeButton"
+                    Click="MinimizeButton_Click"
+                    ToolTip="Свернуть"
+                    Style="{StaticResource WindowControlButton}">
+                        <Button.Content>
+                            <Path
+                            Data="{StaticResource MinimizeButton}"
+                            Width="10"
+                            Height="1"
+                            Fill="White"
+                            Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                    <Button
+                    x:Name="MaximizeRestoreButton"
+                    Click="MaximizeRestoreButton_Click"
+                    ToolTip="Развернуть"
+                    Style="{StaticResource WindowControlButton}">
+                        <Button.Content>
+                            <Path
+                            x:Name="MaximizeRestoreButtonIcon"
+                            Data="{StaticResource MaximizeButton}"
+                            Width="10"
+                            Height="8"
+                            Fill="White"
+                            Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                    <Button
+                    x:Name="CloseButton" 
+                   Click="CloseButton_Click"
+                    ToolTip="Закрыть"
+                    Style="{StaticResource CloseButton}">
+                        <Button.Content>
+                            <Path
+                            Data="{StaticResource Exitbutton}"
+                            Width="10"
+                            Height="10"
+                            Fill="White"
+                            Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border
+        x:Name="SearchBar"
+        Grid.Row="1"
+        Background="BlanchedAlmond"
+        Style="{StaticResource SearchBar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Click="UserModeButton_Click"
+                    HorizontalAlignment="Left"
+                    Grid.Column="0"
+                    ToolTip="Режим обычного пользователя"
+                    Margin="20,0,0,0"
+                    Padding="5,0,0,0"
+                    Width="40"
+                    Height="40">
+                    <Button.Content>
+                        <Path
+                            Data="{StaticResource UserXMark}"
+                            Width="30"
+                            Height="30"
+                            Fill="Black"
+                            Stretch="Uniform"/>
+                    </Button.Content>
+                </Button>
+
+                <StackPanel
+                Grid.Column="1"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+
+                    <TextBlock
+                    Text="Поиск по названию:"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Margin="0,9,5,0"/>
+
+                    <TextBox
+                    x:Name="SearchBox"
+                    Text="{Binding ModelSearchText, UpdateSourceTrigger=PropertyChanged}"
+                    Height="25"
+                    Width="200"
+                    Padding="0,5,0,0"
+                    Margin="0,0,5,0"/>
+
+                    <Button
+                    x:Name="SearchButton"
+                    Command="{Binding ApplyFiltersCommand}"
+                    ToolTip="Поиск"
+                    Margin="0,0,20,0"
+                    Style="{StaticResource SearchButton}">
+                        <Button.Content>
+                            <Path
+                            Data="{StaticResource MagnifyingGlass}"
+                            Width="20"
+                            Height="20"
+                            Fill="Black"
+                            Stretch="Uniform"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+        </Border>
+
+        <Border
+            x:Name="MainContent"
+            Grid.Row="2"
+            Style="{StaticResource MainContent}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                         Width="725"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid
+                    Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Center"
+                        Text="Свойства объекта:"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Background="LightGray"
+                        Padding="0,3"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="BottomPanel"
+            Grid.Row="3"
+            ToolTip="LowBarToolTip"
+            Style="{StaticResource BottomPanel}">
+            <TextBlock
+                Text="© 2025 Группа 434. Все права защищены."
+                FontSize="8"
+                HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>

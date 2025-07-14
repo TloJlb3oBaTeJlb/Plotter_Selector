@@ -637,5 +637,30 @@ namespace Project_UI
             ModelSearchText = ((TextBox)sender).Text;
             await ApplyFiltersAsync();
         }
+
+        private void AdminModeButton_Click(object sender, RoutedEventArgs e)
+        {
+            double currentLeft = this.Left;
+            double currentTop = this.Top;
+            double currentWidth = this.ActualWidth;
+            double currentHeight = this.ActualHeight;
+
+            //await ApplyFiltersAsync(new Filter());
+            AdminWindow adminWindow = new AdminWindow(_server, _dbAdmin, currentLeft, currentTop, currentWidth, currentHeight);
+
+            this.Hide();
+            adminWindow.Show();
+
+            adminWindow.Closed += (s, args) =>
+            {
+                this.Left = adminWindow.Left;
+                this.Top = adminWindow.Top;
+                this.Width = adminWindow.Width;
+                this.Height = adminWindow.Height;
+
+                this.Show();
+                LoadAllPlotters();
+            };
+        }
     }
 }

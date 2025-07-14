@@ -109,9 +109,10 @@
                 </Grid.ColumnDefinitions>
                 
                 <Button
+                    Click="AdminModeButton_Click"
                     HorizontalAlignment="Left"
                     Grid.Column="0"
-                    ToolTip="Поиск"
+                    ToolTip="Режим редактирования базы данных"
                     Margin="20,0,0,0"
                     Padding="5,0,0,0"
                     Width="40"
