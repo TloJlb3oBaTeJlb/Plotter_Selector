@@ -7,16 +7,14 @@ namespace TestServer
         static async Task Main(string[] args)
         {
             PlotterDbServer server = new();
-            var task = server.StartAsync();
+            server.StartAsync();
+            while (!server.IsRunning) { }
 
             // Test admin client
-            while (!server.IsRunning) { }
-            PlotterDbAdminClient client = new();
+            //PlotterDbAdminClient client = new();
 
-            var plotters = await client.GetFilteredPlottersAsync(new() { Model = "a"});
-            plotters.ForEach(Console.WriteLine);
-
-            await task;
+            //var plotters = await client.GetFilteredPlottersAsync(new() { Model = "a"});
+            //plotters.ForEach(Console.WriteLine);
 
             //Console.WriteLine(await client.AddPlotterAsync(plotters.First()));
 
@@ -34,7 +32,11 @@ namespace TestServer
             //plotters = await client.GetFilteredPlottersAsync(new());
             //plotters.ForEach(Console.WriteLine);
 
+            Console.WriteLine("Press any key to stop server");
+            Console.ReadKey();
+            Console.Write('\b');
             server.Stop();
+            //await task;
         }
     }
 }

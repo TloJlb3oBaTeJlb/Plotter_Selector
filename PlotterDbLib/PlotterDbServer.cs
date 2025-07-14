@@ -47,34 +47,31 @@ namespace PlotterDbLib
         }
 
 
-        public string DbPath { init; get; } = "plotters.db";
+        public string DbPath { init; get; } = "../../../plotters.db";
         public string Url { init; get; } = "http://localhost:1111/";
         public bool IsRunning { get => listener.IsListening; }
 
 
-        public async Task StartAsync()
+        public async void StartAsync()
         {
             listener.Start();
             Console.WriteLine("Server started with url - " + Url);
 
-            while (true)
+            try
             {
-                try
+                while (true)
                 {
-                    while (true)
-                    {
-                        var context = await listener.GetContextAsync();
-                        var request = context.Request;
-                        Console.WriteLine($"Request: {request.HttpMethod} {request.Url}");
+                    var context = await listener.GetContextAsync();
+                    var request = context.Request;
+                    Console.WriteLine($"Request: {request.HttpMethod} {request.Url}");
 
-                        HandleRequestAsync(context);
-                    }
+                    HandleRequestAsync(context);
                 }
-                catch (HttpListenerException)
-                {
-                    listener.Close();
-                    Console.WriteLine("Server stopped");
-                }
+            }
+            catch (HttpListenerException)
+            {
+                listener.Close();
+                Console.WriteLine("Server stopped");
             }
 
         }
