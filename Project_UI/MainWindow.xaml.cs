@@ -149,7 +149,7 @@ namespace Project_UI
             InitializeComponent();
 
             _server = new();
-            var task = _server.StartAsync();
+            _server.StartAsync();
 
             _dbAdmin = new();
             _dbCilent = new();
